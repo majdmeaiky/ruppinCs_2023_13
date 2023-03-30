@@ -385,6 +385,8 @@ namespace Fair_Scheduling_Application_Server.Models.DAL
                     worker.Name = (string)dr["Name"];
                     worker.Start_Date = (DateTime)dr["Start_Date"];
                     worker.Company_Code = (string)dr["Company_Code"];
+                    worker.Company_Name = (string)dr["Company_Name"];
+
                     worker.Worker_Id = (int)dr["Worker_Id"];
                     worker.Image = (string)dr["Image"];
 
