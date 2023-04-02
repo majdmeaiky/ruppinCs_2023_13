@@ -4,6 +4,7 @@ import { View, TouchableOpacity, Image, Text } from 'react-native';
 import { Context } from '../Components/FCContext'
 import { ScrollView } from 'react-native-gesture-handler';
 import { SearchBar } from 'react-native-elements';
+import AlertPro from "react-native-alert-pro";
 
 export default function ButtonAddWorkerToShift(props) {
     const { logInWorker, setlogInWorker, workers, setWorkers, schedules, setSchedules,apiUrl } = useContext(Context);
@@ -13,6 +14,8 @@ export default function ButtonAddWorkerToShift(props) {
 const [selecteddate, setSelecteddate] = useState();
 const [dayOfWeek, setDayOfWeek] = useState('');
 const [disabled, setDisabled] = useState(false);
+const [workerAddeed, setWorkerAddeed] = useState('');
+
 useEffect(() => {
     const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     setDayOfWeek(weekdays[props.DayOfWeek.toLocaleString('en-US', {weekday: 'long'})]);
@@ -94,6 +97,21 @@ useEffect(() => {
             
             .then(() => {
                 console.log(props.weeklyCounter);
+
+                setWorkerAddeed(               <AlertPro
+                    ref={ref => {
+                        this.AlertPro = ref;
+                    }}
+                    title="New Worker Added"
+                         message="Successfuly!"     
+                                            showCancel={false}
+                    showConfirm={false}
+                    confirmText="OK"
+                  />
+                  
+                  );
+                  this.AlertPro.open();
+                  
                 fetch(apiUrl+`Schedule?Company_Code=${logInWorker.Company_Code}&week_counter=${props.weeklyCounter}`, {
                     method: 'GET',
                     headers: new Headers({
@@ -108,8 +126,11 @@ useEffect(() => {
                         return res.json()
                     })
                     .then((data) => {
-                        setVisible(!visible);
-
+                        setTimeout(() => {
+                            setVisible(!visible);
+                        }, 1000); // 1000 milliseconds = 1 second
+        
+                          
                         // alert('horray');
                         // console.log(data);
                         setSchedules({
@@ -117,7 +138,7 @@ useEffect(() => {
                             [`${props.weeklyCounter}`]: data,
                             // add the new schedule as a value for the 'Monday' key
                         });
-alert('added succecfuly');
+// alert('added succecfuly');
 
                     })
 
@@ -189,6 +210,8 @@ alert('added succecfuly');
                     onChangeText={setSearch}
                     value={search}
                 />
+
+                {workerAddeed}
 
                 <ScrollView>
                     <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>{workerStr}</View>

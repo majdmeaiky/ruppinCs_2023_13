@@ -9,6 +9,8 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Context } from '../Components/FCContext'
 import { useNavigation } from '@react-navigation/native';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import AlertPro from "react-native-alert-pro";
+
 import { CheckBox } from 'react-native-elements'
 import * as ImagePicker from 'expo-image-picker'
 
@@ -29,8 +31,8 @@ const [scheduleStr, setScheduleStr] = useState('');
   const [full_name, setFull_name] = useState("");
   const [email, setEmail] = useState("");
   const [base64, setBase64] = useState('');
-
-
+const [workerAddeed, setWorkerAddeed] = useState('');
+const [disabled, setDisabled] = useState(false);
 
 
 
@@ -87,18 +89,28 @@ const [scheduleStr, setScheduleStr] = useState('');
     })
       .then((data) => {
         // alert('worker added successfuly')
+
         setWorker_Id('');
         setFull_name('');
         setEmail('');
         setdatepicked();
         setcheck(false);
 setImage('');
-
-setScheduleStr(<AwesomeAlert
-  show={true}
+setWorkerAddeed(               <AlertPro
+  ref={ref => {
+      this.AlertPro = ref;
+  }}
   title="New Worker Added"
-  message="Successfuly!"
-/>)
+       message="Successfuly!"     
+                          showCancel={false}
+  showConfirm={false}
+  confirmText="OK"
+/>
+
+);
+this.AlertPro.open();
+
+
         fetch(apiUrl+`Workers?Company_Code=${logInWorker.Company_Code}`, {
           method: 'GET',
           headers: new Headers({
@@ -115,12 +127,11 @@ setScheduleStr(<AwesomeAlert
           .then((data) => {
             console.log(data);
             setWorkers(data);
-            setAddworkerVisible(!addworkerVisible);
-            setScheduleStr(<AwesomeAlert
-              show={false}
-              title="New Worker Added"
-              message="Successfuly!"
-            />)
+            // setScheduleStr(<AwesomeAlert
+            //   show={false}
+            //   title="New Worker Added"
+            //   message="Successfuly!"
+            // />)
             
           })
 
@@ -134,6 +145,10 @@ setScheduleStr(<AwesomeAlert
         console.error('Error:', error);
 
       });
+      setTimeout(() => {
+        setAddworkerVisible(!addworkerVisible);
+
+      }, 2000);
 
   };
 
@@ -199,7 +214,7 @@ const toggleOverlayAddWorker = () => {
   value={worker_Id}
   onChangeText={setWorker_Id}
   inputStyle={{ color: 'grey' }}
-
+disabled={disabled}
   leftIcon={
     <EvilIcon name='credit-card' size={25} color='#00BFFF' />
   }
@@ -207,6 +222,7 @@ const toggleOverlayAddWorker = () => {
 
 <Input
   placeholder='Full Name'
+  disabled={disabled}
   value={full_name}
   onChangeText={setFull_name}
   inputStyle={{ color: 'grey' }}
@@ -218,6 +234,7 @@ const toggleOverlayAddWorker = () => {
 <Input
   placeholder='Email'
   value={email}
+  disabled={disabled}
   onChangeText={setEmail}
   inputStyle={{ color: 'grey' }}
   leftIcon={
@@ -237,6 +254,7 @@ const toggleOverlayAddWorker = () => {
 </TouchableOpacity>
 <DateTimePickerModal
   isVisible={isDatePickerVisible}
+  disabled={disabled}
   mode="date"
   onConfirm={handleConfirm}
   onCancel={hideDatePicker}
@@ -246,6 +264,7 @@ const toggleOverlayAddWorker = () => {
   title='Check If Manager'
 textStyle={{color:'grey'}}
   checked={check}
+  disabled={disabled}
   onIconPress={() => setcheck(!check)}
   checkedColor='#00BFFF'
   containerStyle={{ backgroundColor: 'none', borderWidth: 0, borderBottomColor: 'gray', borderBottomWidth: 1 }}
@@ -271,7 +290,7 @@ textStyle={{color:'grey'}}
   }}
   onPress={addNewWorker}
 />
-{scheduleStr}
+{workerAddeed}
 </View>
 </Overlay>
 </View>

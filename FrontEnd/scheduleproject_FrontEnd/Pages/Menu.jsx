@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import CalendarStrip from 'react-native-calendar-strip';
 import React, { useEffect, useState, useContext } from 'react';
 import SegmentedControlTab from "react-native-segmented-control-tab";
@@ -12,6 +12,7 @@ import AwesomeAlert from 'react-native-awesome-alerts';
 import { Overlay } from 'react-native-elements';
 import Requests from '../Components/Requests';
 import WorkerDetails from '../Components/WorkerDetails';
+import AlertPro from "react-native-alert-pro";
 
 
 export default function Menu() {
@@ -25,8 +26,7 @@ export default function Menu() {
     const [isLoading, setisLoading] = useState(false);
     const [vieworkerVisible, setVieworkerVisible] = useState(false);
     const [selectedWorker, setSelectedWorker] = useState();
-    const [showAlert, setShowAlert] = useState(false);
-    const [scheduleStr, setScheduleStr] = useState('');
+    const [scheduleStr, setScheduleStr] = useState();
 
     function getSunday1(date) {
         const sunday = new Date(date);
@@ -58,53 +58,80 @@ export default function Menu() {
     };
 
     const makeSchedule = () => {
-        
-             fetch(apiUrl + `Schedule/CreateSchedule?Company_Code=${logInWorker.Company_Code}&weeklycounter=${weeklyCounter}`, {
-                method: 'GET',
-                headers: new Headers({
-                    'Accept': 'application/json; charset=UTF-8',
-                    'Content-Type': 'application/json; charset=UTF-8',
 
-                }),
+        fetch(apiUrl + `Schedule/CreateSchedule?Company_Code=${logInWorker.Company_Code}&weeklycounter=${weeklyCounter}`, {
+            method: 'GET',
+            headers: new Headers({
+                'Accept': 'application/json; charset=UTF-8',
+                'Content-Type': 'application/json; charset=UTF-8',
+
+            }),
+        })
+            .then(res => {
+                return res.json()
             })
-                .then(res => {
-                    return res.json()
-                })
-                .then((data) => {
-                    console.log(data);
-                    const isEveryWorkerIdZero = data.every(item => item['Worker_Id'] === 0);
+            .then((data) => {
+                // console.log(data);
+                const isEveryWorkerIdZero = data.every(item => item['Worker_Id'] === 0);
 
-                    if (isEveryWorkerIdZero) {
-                        // Show alert for every Worker_Id is equal to 0
-                        setScheduleStr(<AwesomeAlert
-                            show={true}
-                            title="No Schedule Made!"
-                            message="Cannot Make A Schedule That Matches The Requests."
-                            icon="error"
-                        />);
-                    } else {
-                        // Show alert for at least one Worker_Id is not equal to 0
-                        setScheduleStr(<AwesomeAlert
-                            show={true}
-                            title="Schedule Made!"
-                            message="Successfuly!"
-                        />);
-                    }
-                    getSchedule((weeklyCounter));
-                })
+                if (isEveryWorkerIdZero) {
+                    // Show alert for every Worker_Id is equal to 0
+                    // setScheduleStr(<AwesomeAlert
+                    //     show={true}
+                    //     title="Schedule Not Made!"
+                    //     message="There Is Not Enough Requests To make A New Schedule!"
+                    // />);
+                    setScheduleStr(      <AlertPro
+                        ref={ref => {
+                            this.AlertPro1 = ref;
+                        }}
+                        title="Schedule Not Made!"
+                             message="There Is Not Enough Requests To make A New Schedule!"  
+                                                   showCancel={false}
+                        showConfirm={false}
+                        confirmText="OK"
+                      />
+                );
+                this.AlertPro1.open();
 
-                .catch((error) => {
-                    console.error('Error:', error);
+                 
 
-                });
-    
+                } else {
+                    // Show alert for at least one Worker_Id is not equal to 0
+                    // setScheduleStr(<AwesomeAlert
+                    //     show={true}
+                    //     title="Schedule Made!"
+                    //     message="Successfuly!"
+                    // />);
+
+                    setScheduleStr(      <AlertPro
+                        ref={ref => {
+                            this.AlertPro2 = ref;
+                        }}
+                        title="Schedule Made!"
+                             message="Successfuly!"     
+                                                showCancel={false}
+                        showConfirm={false}
+                        confirmText="OK"
+                      />
+                );
+                this.AlertPro2.open();
+                }
+                getSchedule((weeklyCounter));
+            })
+
+            .catch((error) => {
+                console.error('Error:', error);
+
+            });
+
     };
 
     useEffect(() => {
         {
             schedules[`${weeklyCounter}`] == null &&
 
-            setisLoading(true);
+                setisLoading(true);
         }
 
         getSchedule(weeklyCounter);
@@ -172,13 +199,13 @@ export default function Menu() {
 
     };
 
-    const deleteWorkerInShift=(worker)=>{
+    const deleteWorkerInShift = (worker) => {
         console.log(worker.Company_Name);
         const Worker_Id = worker.Worker_Id;
         const Company_Name = worker.Company_Name;
         const Shift_Id = worker.Shift_Id;
         const workerobj = { Worker_Id, Company_Name, Shift_Id };
-        fetch(apiUrl+`WorkerInShift`, {
+        fetch(apiUrl + `WorkerInShift`, {
             method: 'DELETE',
             headers: new Headers({
                 'Accept': 'application/json; charset=UTF-8',
@@ -187,9 +214,9 @@ export default function Menu() {
             }),
             body: JSON.stringify(workerobj),
 
-        })  
+        })
             .then(() => {
-                fetch(apiUrl+`Schedule?Company_Code=${logInWorker.Company_Code}&week_counter=${weeklyCounter}`, {
+                fetch(apiUrl + `Schedule?Company_Code=${logInWorker.Company_Code}&week_counter=${weeklyCounter}`, {
                     method: 'GET',
                     headers: new Headers({
                         'Accept': 'application/json; charset=UTF-8',
@@ -207,7 +234,7 @@ export default function Menu() {
                             [`${weeklyCounter}`]: data,
                             // add the new schedule as a value for the 'Monday' key
                         });
-alert('Deleted succecfuly');
+                        alert('Deleted succecfuly');
 
                     })
 
@@ -222,7 +249,7 @@ alert('Deleted succecfuly');
                 console.error('Error:', error);
 
             });
-};
+    };
 
     return (
 
@@ -312,9 +339,9 @@ alert('Deleted succecfuly');
                                                 <View style={{ flex: 1, justifyContent: 'space-between' }}>
                                                     <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{item["Name"]}</Text>
                                                 </View>
-                                                <TouchableOpacity style={{ marginRight:20 }} onPress={()=>deleteWorkerInShift(item)}>
-                    <EvilIcon name='trash' size={50} color='black' ></EvilIcon>
-                </TouchableOpacity>
+                                                <TouchableOpacity style={{ marginRight: 20 }} onPress={() => deleteWorkerInShift(item)}>
+                                                    <EvilIcon name='trash' size={50} color='black' ></EvilIcon>
+                                                </TouchableOpacity>
 
                                             </View>
                                         </View>
@@ -354,9 +381,9 @@ alert('Deleted succecfuly');
                         title="Swipe For New Schedule"
                         borderRadius={70}
                         onSwipeSuccess={() => {
-                            setShowAlert(!showAlert);
+                            this.AlertPro.open();
                         }}
-                        resetAfterSuccess={true} />
+                    />
                     )}
 
                 </View>
@@ -367,27 +394,45 @@ alert('Deleted succecfuly');
 
             </Overlay>
 
-            {logInWorker && <AwesomeAlert
-                show={showAlert}
-                showProgress={false}
-                title={"New Schedule Alert!"}
-                message={"Are You Sure?"}
-                closeOnTouchOutside={true}
-                closeOnHardwareBackPress={false}
-                showConfirmButton={true}
-                confirmText="Yes"
-                cancelText="No"
-                showCancelButton={true}
-                confirmButtonColor="#00BFFF"
-                onConfirmPressed={() => {
-                    setShowAlert(!showAlert);
-                    makeSchedule();
+            <AlertPro
+                ref={ref => {
+                    this.AlertPro = ref;
                 }}
-                onCancelPressed={() => {
-                    setShowAlert(!showAlert);
+                onConfirm={() => {
+                    this.AlertPro.close();
+                    makeSchedule();
 
                 }}
-            />}
+                onCancel={()=>{
+                    this.AlertPro.close();
+                }}
+                title="New Schedule Alert!"
+                message='Are You Sure?                                                                *Old Schedule Will Be Removed*'
+                textCancel="Cancel"
+                textConfirm="Yes"
+                
+                
+                customStyles={{
+                    mask: {
+                        backgroundColor: "transparent"
+                    },
+                    container: {
+                        borderWidth: 1,
+                        borderColor: "black",
+                        shadowColor: "#000000",
+                        shadowOpacity: 0.1,
+                        shadowRadius: 10
+                    },
+                    buttonCancel: {
+                        backgroundColor: "red"
+                    },
+                    buttonConfirm: {
+                        backgroundColor: "#00BFFF"
+                    }
+                }}
+            />
+
+
             {scheduleStr}
         </SafeAreaView>
     )

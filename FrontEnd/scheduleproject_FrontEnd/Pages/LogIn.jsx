@@ -21,11 +21,10 @@ const [isValid, setIsValid] = useState(true);
     const Is_Manager = '';
     const Image='';
     const Company_Name='';
-    const Shift_Id=-1
+    const Shift_Id=-1;
 
     const worker = { Worker_Id, Name, Email, Start_Date, Is_Manager, Company_Code,Company_Name,Image,Shift_Id };
     // console.log(worker);
-
 
       fetch(apiUrl+'Workers', {
         method: 'POST',
@@ -90,7 +89,7 @@ style={[
           value={Company_Code}
 
         />
-        {!isValid&& <Text style={{fontSize:15,alignSelf:'center'}}>*Wrong Data*</Text>}
+        {!isValid&& <Text style={{fontSize:15,alignSelf:'center'}}>*Invalid User*</Text>}
         <Button
           title="LOGIN"
           titleStyle={{ fontWeight: '700' }}

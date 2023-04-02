@@ -93,42 +93,43 @@ export default function AskRequest() {
     //     console.log('starting dictionary',dictionary);
     //     return dictionary;
     //   }
+const fetchRequests=()=>{
+    fetch(apiUrl+'RequestsFromClient?Worker_Id=' + logInWorker.Worker_Id + '&Company_Name=' + logInWorker.Company_Name + '&weeklyCounter=' + weeklyCounter, {
+        method: 'GET',
+        headers: new Headers({
+            'Accept': 'application/json; charset=UTF-8',
+            'Content-Type': 'application/json; charset=UTF-8',
 
-    useEffect(() => {
-        //         const initRequest = createDictionary(startingforRequest);
-        // console.log('init req',initRequest);
-        //setrequsts(initRequest);
-        fetch(apiUrl+'RequestsFromClient?Worker_Id=' + logInWorker.Worker_Id + '&Company_Name=' + logInWorker.Company_Name + '&weeklyCounter=' + weeklyCounter, {
-            method: 'GET',
-            headers: new Headers({
-                'Accept': 'application/json; charset=UTF-8',
-                'Content-Type': 'application/json; charset=UTF-8',
+        }),
+        // body: JSON.stringify({ Company_Code }),
 
-            }),
-            // body: JSON.stringify({ Company_Code }),
+    })
+        .then(res => {
+            return res.json()
+        })
+        .then((data) => {
+            console.log('request length', data.length);
+            console.log('request', data);
+            if (data.length == 0) {
+                setcanSubmit(false);
+            }
+            else {
+                setprevrequest(data);
+                // alert('already asked requests for this week');
+                setcanSubmit(true);
+            }
 
         })
-            .then(res => {
-                return res.json()
-            })
-            .then((data) => {
-                console.log('request length', data.length);
-                console.log('request', data);
-                if (data.length == 0) {
-                    setcanSubmit(false);
-                }
-                else {
-                    setprevrequest(data);
-                    alert('already asked requests for this week');
-                    setcanSubmit(true);
-                }
 
-            })
+        .catch((error) => {
+            console.error('Error:', error);
 
-            .catch((error) => {
-                console.error('Error:', error);
+        });
 
-            });
+};
+
+    useEffect(() => {
+        fetchRequests();
     }, [weeklyCounter])
 
     const CreateDictionary = ((start) => {
@@ -172,11 +173,11 @@ export default function AskRequest() {
     const onDateSelected = (date) => {
         const weekdiff = DateDifference(date, selectedDate);
         console.log('weekdiff', weekdiff);
-        if (weekdiff != 0) {
-            // setWeeklyCounter((prev) => prev + weekdiff);
-            const initNewWeekRequest = CreateDictionary(getSunday1(date));
-            setrequsts(initNewWeekRequest);
-        }
+        // if (weekdiff != 0) {
+        //     // setWeeklyCounter((prev) => prev + weekdiff);
+        //     const initNewWeekRequest = CreateDictionary(getSunday1(date));
+        //     setrequsts(initNewWeekRequest);
+        // }
         if (ChechDayValid(requsts[FormatDate(selectedDate)])) {
             const add = {
                 date: selectedDate,
@@ -260,7 +261,7 @@ export default function AskRequest() {
             id: '3',
             label: "Can't",
             value: 3,
-            selected: false
+            selected: true
 
         }
     ]
@@ -314,7 +315,8 @@ export default function AskRequest() {
         {
             id: '3',
             label: "Can't",
-            value: '3'
+            value: '3',
+            selected:true
         }
     ]
     const [radioButtonsEvening, setRadioButtonsEvening] = useState(eveningButtons);
@@ -366,7 +368,8 @@ export default function AskRequest() {
         {
             id: '3',
             label: "Can't",
-            value: '3'
+            value: '3',
+            selected:true
         }
     ]
     const [radioButtonsNight, setRadioButtonsNight] = useState(nightButtons);
@@ -464,6 +467,7 @@ export default function AskRequest() {
                 .then((data) => {
                     alert('requsts sent !');
                     setcanSubmit(true);
+                    fetchRequests();
 
                 })
                 .catch((error) => {
@@ -502,6 +506,8 @@ export default function AskRequest() {
         // }
         // Update the weekly counter state
         setWeeklyCounter(diffInWeeks);
+        const initNewWeekRequest = CreateDictionary(getSunday1(startDate));
+        setrequsts(initNewWeekRequest);
 
     };
 
