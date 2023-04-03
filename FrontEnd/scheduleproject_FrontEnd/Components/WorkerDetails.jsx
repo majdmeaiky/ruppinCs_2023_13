@@ -1,35 +1,18 @@
-import React, { useEffect, useState,useContext } from 'react'
-import { StyleSheet, Text, View, SafeAreaView, TextInput, Image, FlatList, TouchableOpacity } from 'react-native';
-import { Button, Card } from '@rneui/themed';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { Input } from 'react-native-elements';
+import React, {useState,useContext } from 'react'
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import EvilIcon from '@expo/vector-icons/EvilIcons'
-import DateTimePicker from '@react-native-community/datetimepicker';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
 import AwesomeAlert from 'react-native-awesome-alerts';
-//install react-native-community
-import { CheckBox } from 'react-native-elements'
-import * as ImagePicker from 'expo-image-picker'
 import { Context } from './FCContext'
-//import TextDate from './Pages/TextDate';
 import {Overlay } from '@rneui/themed';
 import UpdateWorker from './UpdateWorker';
-export default function AddWorker(props) {
+export default function WorkerDetails(props) {
 
-
-    const [datepicked, setdatepicked] = useState();
-    const [datepickedString, setdatepickedString] = useState("started working on:");
-    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const {  ondeleteWorker } = props;
+const [worker, setWorker] = useState(props.worker)
     // input sates
-    const [check, setcheck] = useState(false);
-    const [image, setImage] = useState('');
-    const [worker_Id, seWorker_Id] = useState("");
-    const [full_name, setFull_name] = useState("");
-    const [email, setEmail] = useState("");
     const { logInWorker,workers, setWorkers,apiUrl} = useContext(Context);
     const [updateWorkerVisible, setUpdateWorkerVisible] = useState(false);
     const [scheduleStr, setScheduleStr] = useState('');
-
     function FormatDate (got_date)
     {
         const date = new Date(got_date);
@@ -43,7 +26,7 @@ export default function AddWorker(props) {
     }
 
 const DeleteWorker = ()=>{
-    const id = props.worker.Worker_Id;
+    const id = worker.Worker_Id;
     const Company_Code = logInWorker.Company_Code;
     fetch(apiUrl+'Workers?Worker_Id='+id+'&Company_Code='+Company_Code    , {
         method: 'DELETE',
@@ -63,29 +46,24 @@ const DeleteWorker = ()=>{
                 title="Worker Deleted"
                 message="Successfuly!"
               />)
-              
             fetch(apiUrl+`Workers?Company_Code=${logInWorker.Company_Code}`, {
                 method: 'GET',
                 headers: new Headers({
                   'Accept': 'application/json; charset=UTF-8',
                   'Content-Type': 'application/json; charset=UTF-8',
           
-                }),
-                // body: JSON.stringify({ Company_Code }),
-          
+                }),          
               })
                 .then(res => {
                   return res.json()
                 })
                 .then((data) => {
                   // console.log(data);
-                  setWorkers(data);
-                  setScheduleStr(<AwesomeAlert
-                    show={false}
-                    title="New Worker Added"
-                    message="Successfuly!"
-                  />)
-                  
+                  setTimeout(() => {
+                    handleDeleteWorker();
+                  }, 1000);
+
+                  setWorkers(data);                  
                 })
           
                 .catch((error) => {
@@ -101,10 +79,18 @@ const DeleteWorker = ()=>{
         });
 }
 
+const handleUpdateWorker = (updatedWorker) => {
+  setWorker(updatedWorker);
+  toggleOverlayUpdateWorker(); // close the overlay after updating the worker
+};
 
 const toggleOverlayUpdateWorker = () => {
     setUpdateWorkerVisible(!updateWorkerVisible);
   };
+
+  const handleDeleteWorker=()=>{
+    ondeleteWorker();
+  }
 
     return (
 
@@ -113,27 +99,27 @@ const toggleOverlayUpdateWorker = () => {
         <Text style={styles.HeaderTXT}>Worker Details</Text>
       </View>
             
-            <Image source={{ uri: `data:image/png;base64,${props.worker.Image}` }} style={styles.image} />
+            <Image source={{ uri: `data:image/png;base64,${worker.Image}` }} style={styles.image} />
             <View style={styles.Detailview}>
                 <Text style={styles.Label}>ID - </Text>
-                <Text style={styles.DetailTxt}>{props.worker.Worker_Id}</Text>
+                <Text style={styles.DetailTxt}>{worker.Worker_Id}</Text>
             </View>
             <View style={styles.Detailview}>
             <Text style={styles.Label}>NAME - </Text>
-                <Text style={styles.DetailTxt}>{props.worker.Name}</Text>
+                <Text style={styles.DetailTxt}>{worker.Name}</Text>
             </View>
             <View style={styles.Detailview}>
             <Text style={styles.Label}>EMAIL - </Text>
-                <Text style={styles.DetailTxt}>{props.worker.Email}</Text>
+                <Text style={styles.DetailTxt}>{worker.Email}</Text>
             </View>
             <View style={styles.Detailview}>
             <Text style={styles.Label}>STARTED AT - </Text>
-                <Text style={styles.DetailTxt}>{FormatDate(props.worker.Start_Date)}</Text>
+                <Text style={styles.DetailTxt}>{FormatDate(worker.Start_Date)}</Text>
             </View>
             <View style={styles.Detailview}>
             <Text style={styles.Label}>STATUS - </Text>
                 <Text style={styles.DetailTxt}>
-                    {props.worker.Is_Manager === 1 ? 'Manager' : 'Not Manager'}
+                    {worker.Is_Manager === 1 ? 'Manager' : 'Not Manager'}
                 </Text>
             </View>
             <View style={styles.buttons}>
@@ -146,7 +132,7 @@ const toggleOverlayUpdateWorker = () => {
             </View>
 
             <Overlay isVisible={updateWorkerVisible} onBackdropPress={toggleOverlayUpdateWorker} overlayStyle={{ position: 'absolute', bottom: 0, width: '100%' }}>
-            <UpdateWorker worker={props.worker}></UpdateWorker>
+            <UpdateWorker worker={worker} onUpdateWorker={handleUpdateWorker}></UpdateWorker>
 
           </Overlay>
           {scheduleStr}

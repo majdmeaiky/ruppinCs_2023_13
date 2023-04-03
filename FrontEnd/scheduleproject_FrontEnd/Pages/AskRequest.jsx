@@ -1,13 +1,11 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, ScrollView } from 'react-native';
 import CalendarStrip from 'react-native-calendar-strip';
 import React, { useEffect, useState, useContext } from 'react';
 import RadioGroup from 'react-native-radio-buttons-group';
 import { Context } from '../Components/FCContext'
-
-import { Button, Card } from '@rneui/themed';
+import AlertPro from "react-native-alert-pro";
+import { Button } from '@rneui/themed';
 import Header from '../Components/Header';
-import { useFocusEffect } from '@react-navigation/native';
 import ShowRequests from '../Components/ShowRequests';
 export default function AskRequest() {
 
@@ -70,29 +68,13 @@ export default function AskRequest() {
     const [value, setValue] = useState('');
     const [prevrequest, setprevrequest] = useState();
     const minDate = startingforRequest;
+const [requestSentStr, setRequestSentStr] = useState();
+const [requestnotValid, setRequestnotValid] = useState();
+useEffect(() => {
+setprevrequest();
+}, [])
 
-    // useEffect(() => {
-    // const initRequest = createDictionary(startingforRequest);
-    // console.log('init req',initRequest);
-    // setrequsts(initRequest);
-    // }, [])
 
-    // function createDictionary(weekStart) {
-    //     const endOfWeek = new Date(weekStart);
-    //     endOfWeek.setDate(endOfWeek.getDate() + (6 - endOfWeek.getDay()));
-
-    //     const dictionary = {};
-    //     while (weekStart <= endOfWeek) {
-    //       dictionary[FormatDate(weekStart)] = {
-    //         ['M']: {'priority': 3},
-    //         ['E']: {'priority': 3},
-    //         ['N']: {'priority': 3}
-    //       };
-    //       weekStart.setDate(weekStart.getDate() + 1);
-    //     }
-    //     console.log('starting dictionary',dictionary);
-    //     return dictionary;
-    //   }
 const fetchRequests=()=>{
     fetch(apiUrl+'RequestsFromClient?Worker_Id=' + logInWorker.Worker_Id + '&Company_Name=' + logInWorker.Company_Name + '&weeklyCounter=' + weeklyCounter, {
         method: 'GET',
@@ -101,8 +83,6 @@ const fetchRequests=()=>{
             'Content-Type': 'application/json; charset=UTF-8',
 
         }),
-        // body: JSON.stringify({ Company_Code }),
-
     })
         .then(res => {
             return res.json()
@@ -115,7 +95,6 @@ const fetchRequests=()=>{
             }
             else {
                 setprevrequest(data);
-                // alert('already asked requests for this week');
                 setcanSubmit(true);
             }
 
@@ -140,7 +119,6 @@ const fetchRequests=()=>{
         const dict = {};
 
         for (let i = 0; i < 7; i++) {
-            // const currentDate = new Date(dictDate);
             dictDate.setDate(startDate.getDate() + i);
             const formattedDate = FormatDate(dictDate);
             console.log('formattedDate', formattedDate);
@@ -173,11 +151,10 @@ const fetchRequests=()=>{
     const onDateSelected = (date) => {
         const weekdiff = DateDifference(date, selectedDate);
         console.log('weekdiff', weekdiff);
-        // if (weekdiff != 0) {
-        //     // setWeeklyCounter((prev) => prev + weekdiff);
-        //     const initNewWeekRequest = CreateDictionary(getSunday1(date));
-        //     setrequsts(initNewWeekRequest);
-        // }
+        if (weekdiff != 0) {
+            const initNewWeekRequest = CreateDictionary(getSunday1(date));
+            setrequsts(initNewWeekRequest);
+        }
         if (ChechDayValid(requsts[FormatDate(selectedDate)])) {
             const add = {
                 date: selectedDate,
@@ -208,34 +185,38 @@ const fetchRequests=()=>{
         return formattedDate;
     }
 
-    const UnMarkDate = () => {
-        let markedUpdate = [];
-        for (obj in markedDates) {
-            if (obj.date != selectedDate) {
-                markedUpdate.push(obj);
-            }
-        }
-        return markedUpdate;
-    }
+
+   
 
     useEffect(() => {
         console.log('weeklyCounter', weeklyCounter);
-        // const markedUpdate = UnMarkDate();
-        let requestArr = { ...requsts };
-        let shiftsPerDay = {
-            ['M']: {},
-            ['E']: {},
-            ['N']: {}
-        };
-        const formattedDate = FormatDate(selectedDate);
+const resetMorning= requsts[FormatDate(selectedDate)];
+const M=resetMorning['M']['priorety'];
+const E=resetMorning['E']['priorety'];
+const N=resetMorning['N']['priorety'];
 
-        //requestArr[formattedDate] = shiftsPerDay;
-
-        // setrequsts(requestArr);
-        setRadioButtonsMorning(morningButtons);
-        setRadioButtonsEvening(eveningButtons);
-        setRadioButtonsNight(nightButtons);
-        // setmarkedDates(markedUpdate);
+const arrM=[...morningButtons];
+const arrE=[...eveningButtons];
+const arrN=[...nightButtons];
+console.log('sssshjhfvl ',arrM);
+arrM.forEach(element => {
+    if(element.value==M){
+        element.selected=true;
+    }
+});
+arrE.forEach(element => {
+    if(element.value==E){
+        element.selected=true;
+    }
+});
+arrN.forEach(element => {
+    if(element.value==N){
+        element.selected=true;
+    }
+});
+        setRadioButtonsMorning(arrM);
+        setRadioButtonsEvening(arrE);
+        setRadioButtonsNight(arrN);
     }, [selectedDate]);
 
     useEffect(() => {
@@ -248,20 +229,20 @@ const fetchRequests=()=>{
             id: '1', // acts as primary key, should be unique and non-empty string
             label: 'want',
             value: 1,
-            selected: false
+            // selected: false
 
         },
         {
             id: '2',
             label: 'Can',
             value: 2,
-            selected: false
+            // selected: false
         },
         {
             id: '3',
             label: "Can't",
             value: 3,
-            selected: true
+            // selected: false
 
         }
     ]
@@ -288,8 +269,6 @@ const fetchRequests=()=>{
             }
 
             console.log('toAdd', toAdd);
-            // const shiftType='M';
-            // requestArr.formattedDate.shiftType =  radioButtonsMorning.find(button => button.selected);//.value;
             setrequsts(requestArr);
         }
         catch {
@@ -316,7 +295,7 @@ const fetchRequests=()=>{
             id: '3',
             label: "Can't",
             value: '3',
-            selected:true
+            // selected:true
         }
     ]
     const [radioButtonsEvening, setRadioButtonsEvening] = useState(eveningButtons);
@@ -343,8 +322,6 @@ const fetchRequests=()=>{
             }
 
             console.log('toAdd', toAdd);
-            // const shiftType='M';
-            // requestArr.formattedDate.shiftType =  radioButtonsMorning.find(button => button.selected);//.value;
             setrequsts(requestArr);
         }
         catch {
@@ -369,7 +346,7 @@ const fetchRequests=()=>{
             id: '3',
             label: "Can't",
             value: '3',
-            selected:true
+            // selected:true
         }
     ]
     const [radioButtonsNight, setRadioButtonsNight] = useState(nightButtons);
@@ -395,8 +372,6 @@ const fetchRequests=()=>{
             }
 
             console.log('toAdd', toAdd);
-            // const shiftType='M';
-            // requestArr.formattedDate.shiftType =  radioButtonsMorning.find(button => button.selected);//.value;
             setrequsts(requestArr);
         }
         catch {
@@ -429,7 +404,6 @@ const fetchRequests=()=>{
     }
 
     const HandleSubmit = () => {
-        let counter = 0;
         let requestArr = [];
         let requestObj = { ...requsts };
         let validDaysCounter = 0;
@@ -465,10 +439,26 @@ const fetchRequests=()=>{
                     console.log(res);
                 })
                 .then((data) => {
-                    alert('requsts sent !');
+                    setRequestSentStr(      <AlertPro
+                        ref={ref => {
+                            this.AlertPro = ref;
+                        }}
+                        title="Request Sent"
+                             message="Successfuly!"  
+                                                   showCancel={false}
+                        showConfirm={false}
+                        confirmText="OK"
+                      />
+                );
+                try{
+                    this.AlertPro.open();
+
+                }
+                catch{
+
+                }
                     setcanSubmit(true);
                     fetchRequests();
-
                 })
                 .catch((error) => {
                     console.error('Error:', error);
@@ -477,38 +467,37 @@ const fetchRequests=()=>{
 
         }
         else {
-            alert("your request is not valid");
-        }
+
+setRequestnotValid( <AlertPro
+    ref={ref => {
+        this.AlertPro1 = ref;
+    }}
+    showConfirm={false}
+    showCancel={false}
+    title="Error"
+         message="You Have To Enter Requests At Least For 5 Days!"  
+    confirmText="OK"
+  />);
+try{
+                    this.AlertPro1.open();
+                }
+                catch{
+                    
+                }}
     }
     const handleWeekChanged = (startDate) => {
-        // console.log(startDate);
         // Get the starting date of the current week
-
         const currentDate = new Date();
         const currentDay = currentDate.getDay();
         const startingDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - currentDay + 1);
-        // console.log(startingDate);
-
         // Get the starting date of the previous week
         const prevWeekStartingDate = new Date(startingDate.getFullYear(), startingDate.getMonth(), startingDate.getDate() - 7);
-
         // Get the selected start date as a date object
         const startDateObj = new Date(startDate);
-
         // Calculate the difference in weeks between the selected date and the previous week's starting date
         const diffInWeeks = Math.floor((startDateObj - prevWeekStartingDate) / (7 * 24 * 60 * 60 * 1000));
-        // console.log(diffInWeeks);
-        // if (diffInWeeks === 1) {
-        //     setShowSwipeButton(!showSwipeButton);
-        // } else {
-        //     setShowSwipeButton(false);
-
-        // }
         // Update the weekly counter state
         setWeeklyCounter(diffInWeeks);
-        const initNewWeekRequest = CreateDictionary(getSunday1(startDate));
-        setrequsts(initNewWeekRequest);
-
     };
 
     return (
@@ -589,6 +578,8 @@ const fetchRequests=()=>{
                     {
                         (canSubmit&&prevrequest) && <ShowRequests requests={prevrequest}></ShowRequests>
                     }
+                    {requestSentStr}
+                    {requestnotValid}
                 </View>
 
             </ScrollView>

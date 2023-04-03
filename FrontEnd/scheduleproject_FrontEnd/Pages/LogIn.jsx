@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { StyleSheet, Text, View, SafeAreaView, TextInput, Image, FlatList, TouchableOpacity } from 'react-native';
 import { Button, Card } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
@@ -9,9 +9,13 @@ export default function LogIn() {
   const navigation = useNavigation();
   const [Worker_Id, setWorker_Id] = useState();
   const [Company_Code, setCompany_Code] = useState('');
-  const { logInWorker, setlogInWorker, workers, setWorkers,apiUrl } = useContext(Context);
-const [isValid, setIsValid] = useState(true);
+  const { logInWorker, setlogInWorker, workers, setWorkers, apiUrl } = useContext(Context);
+  const [isValid, setIsValid] = useState(true);
+  const [reload, setReload] = useState(false);
 
+  useEffect(() => {
+    setlogInWorker({})
+  }, []);
 
   const checkLogIn = () => {
 
@@ -19,46 +23,42 @@ const [isValid, setIsValid] = useState(true);
     const Email = '';
     const Start_Date = '';
     const Is_Manager = '';
-    const Image='';
-    const Company_Name='';
-    const Shift_Id=-1;
+    const Image = '';
+    const Company_Name = '';
+    const Shift_Id = -1;
 
-    const worker = { Worker_Id, Name, Email, Start_Date, Is_Manager, Company_Code,Company_Name,Image,Shift_Id };
-    // console.log(worker);
+    const worker = { Worker_Id, Name, Email, Start_Date, Is_Manager, Company_Code, Company_Name, Image, Shift_Id };
+    fetch(apiUrl + 'Workers', {
+      method: 'POST',
+      headers: new Headers({
+        'Accept': 'application/json; charset=UTF-8',
+        'Content-Type': 'application/json; charset=UTF-8',
 
-      fetch(apiUrl+'Workers', {
-        method: 'POST',
-        headers: new Headers({
-          'Accept': 'application/json; charset=UTF-8',
-          'Content-Type': 'application/json; charset=UTF-8',
-
-        }),
-        body: JSON.stringify(worker),
+      }),
+      body: JSON.stringify(worker),
+    })
+      .then(res => {
+        return res.json()
       })
-        .then(res => {
-          return res.json()
-        })
-        .then((data) => {
-          setlogInWorker(data);
-          //  console.log(data);
-          if(data.Company_Code){
-            navigation.navigate('Menu');
-  
-          }
-          else{
-            setIsValid(!isValid)
-            setWorker_Id();
-            setCompany_Code('');
-          }
+      .then((data) => {
+        setlogInWorker(data);
+        if (data.Company_Code) {
+          navigation.navigate('Menu');
+          setWorker_Id();
+          setCompany_Code('');
+          setIsValid(true);
 
-          
+        }
+        else {
+          setIsValid(!isValid)
+          setWorker_Id();
+          setCompany_Code('');
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
 
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-
-        });
-    
   }
 
   return (
@@ -70,26 +70,26 @@ const [isValid, setIsValid] = useState(true);
         />
         <TextInput
 
-style={[
-  styles.input,
-  !isValid && { borderColor: 'red' ,borderWidth:'1'} // set border color to red if input is invalid
-]}
-  placeholder='Enter Your ID'
+          style={[
+            styles.input,
+            !isValid && { borderColor: 'red', borderWidth: '1' } // set border color to red if input is invalid
+          ]}
+          placeholder='Enter Your ID'
           onChangeText={setWorker_Id}
           value={Worker_Id}
         />
 
         <TextInput
-style={[
-  styles.input,
-  !isValid && { borderColor: 'red' ,borderWidth:'1'} // set border color to red if input is invalid
-]}
+          style={[
+            styles.input,
+            !isValid && { borderColor: 'red', borderWidth: '1' } // set border color to red if input is invalid
+          ]}
           placeholder='Enter Company Code'
           onChangeText={setCompany_Code}
           value={Company_Code}
 
         />
-        {!isValid&& <Text style={{fontSize:15,alignSelf:'center'}}>*Invalid User*</Text>}
+        {!isValid && <Text style={{ fontSize: 15, alignSelf: 'center' }}>*Invalid User*</Text>}
         <Button
           title="LOGIN"
           titleStyle={{ fontWeight: '700' }}

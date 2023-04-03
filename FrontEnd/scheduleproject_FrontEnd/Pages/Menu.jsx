@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import CalendarStrip from 'react-native-calendar-strip';
 import React, { useEffect, useState, useContext } from 'react';
 import SegmentedControlTab from "react-native-segmented-control-tab";
@@ -8,7 +8,6 @@ import EvilIcon from '@expo/vector-icons/EvilIcons'
 import Header from '../Components/Header';
 import { Context } from '../Components/FCContext';
 import ButtonAddWorkerToShift from '../Components/ButtonAddWorkerToShift';
-import AwesomeAlert from 'react-native-awesome-alerts';
 import { Overlay } from 'react-native-elements';
 import Requests from '../Components/Requests';
 import WorkerDetails from '../Components/WorkerDetails';
@@ -27,7 +26,7 @@ export default function Menu() {
     const [vieworkerVisible, setVieworkerVisible] = useState(false);
     const [selectedWorker, setSelectedWorker] = useState();
     const [scheduleStr, setScheduleStr] = useState();
-
+    const [deleteStr, setDeleteStr] = useState();
     function getSunday1(date) {
         const sunday = new Date(date);
         sunday.setDate(new Date(date).getDate() - new Date(date).getDay());
@@ -71,51 +70,37 @@ export default function Menu() {
                 return res.json()
             })
             .then((data) => {
-                // console.log(data);
                 const isEveryWorkerIdZero = data.every(item => item['Worker_Id'] === 0);
 
                 if (isEveryWorkerIdZero) {
-                    // Show alert for every Worker_Id is equal to 0
-                    // setScheduleStr(<AwesomeAlert
-                    //     show={true}
-                    //     title="Schedule Not Made!"
-                    //     message="There Is Not Enough Requests To make A New Schedule!"
-                    // />);
-                    setScheduleStr(      <AlertPro
+                    setScheduleStr(<AlertPro
                         ref={ref => {
                             this.AlertPro1 = ref;
                         }}
                         title="Schedule Not Made!"
-                             message="There Is Not Enough Requests To make A New Schedule!"  
-                                                   showCancel={false}
+                        message="There Is Not Enough Requests To make A New Schedule!"
+                        showCancel={false}
                         showConfirm={false}
                         confirmText="OK"
-                      />
-                );
-                this.AlertPro1.open();
+                    />
+                    );
+                    this.AlertPro1.open();
 
-                 
+
 
                 } else {
-                    // Show alert for at least one Worker_Id is not equal to 0
-                    // setScheduleStr(<AwesomeAlert
-                    //     show={true}
-                    //     title="Schedule Made!"
-                    //     message="Successfuly!"
-                    // />);
-
-                    setScheduleStr(      <AlertPro
+                    setScheduleStr(<AlertPro
                         ref={ref => {
                             this.AlertPro2 = ref;
                         }}
                         title="Schedule Made!"
-                             message="Successfuly!"     
-                                                showCancel={false}
+                        message="Successfuly!"
+                        showCancel={false}
                         showConfirm={false}
                         confirmText="OK"
-                      />
-                );
-                this.AlertPro2.open();
+                    />
+                    );
+                    this.AlertPro2.open();
                 }
                 getSchedule((weeklyCounter));
             })
@@ -153,13 +138,11 @@ export default function Menu() {
             .then((data) => {
 
                 console.log(data);
-                // if (!schedules.hasOwnProperty(weeklyCounter)) {
                 setSchedules({
                     ...schedules, // copy the current state objecct
                     [`${weeklyCounter}`]: data,
                     // add the new schedule as a value for the 'Monday' key
                 });
-                // }
                 setisLoading(false);
 
             })
@@ -171,29 +154,15 @@ export default function Menu() {
 
     };
     const handleWeekChanged = (startDate) => {
-        // console.log(startDate);
-        // Get the starting date of the current week
-
         const currentDate = new Date();
         const currentDay = currentDate.getDay();
         const startingDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - currentDay + 1);
-        // console.log(startingDate);
-
         // Get the starting date of the previous week
         const prevWeekStartingDate = new Date(startingDate.getFullYear(), startingDate.getMonth(), startingDate.getDate() - 7);
-
         // Get the selected start date as a date object
         const startDateObj = new Date(startDate);
-
         // Calculate the difference in weeks between the selected date and the previous week's starting date
         const diffInWeeks = Math.floor((startDateObj - prevWeekStartingDate) / (7 * 24 * 60 * 60 * 1000));
-        // console.log(diffInWeeks);
-        // if (diffInWeeks === 1) {
-        //     setShowSwipeButton(!showSwipeButton);
-        // } else {
-        //     setShowSwipeButton(false);
-
-        // }
         // Update the weekly counter state
         setWeeklyCounter(diffInWeeks);
 
@@ -216,6 +185,19 @@ export default function Menu() {
 
         })
             .then(() => {
+                setDeleteStr(<AlertPro
+                    ref={ref => {
+                        this.AlertPro3 = ref;
+                    }}
+                    title="Worker Removed"
+                    message="Successfuly!"
+                    showCancel={false}
+                    showConfirm={false}
+                    confirmText="OK"
+                />
+                );
+                this.AlertPro3.open();
+
                 fetch(apiUrl + `Schedule?Company_Code=${logInWorker.Company_Code}&week_counter=${weeklyCounter}`, {
                     method: 'GET',
                     headers: new Headers({
@@ -223,7 +205,6 @@ export default function Menu() {
                         'Content-Type': 'application/json; charset=UTF-8',
 
                     }),
-
                 })
                     .then(res => {
                         return res.json()
@@ -234,7 +215,6 @@ export default function Menu() {
                             [`${weeklyCounter}`]: data,
                             // add the new schedule as a value for the 'Monday' key
                         });
-                        alert('Deleted succecfuly');
 
                     })
 
@@ -369,7 +349,7 @@ export default function Menu() {
 
 
                     <View style={{ backgroundColor: 'black', width: '80%', height: 1, alignSelf: 'center', marginTop: 40, marginBottom: 10 }} />
-                    <Requests weeklyCounter={weeklyCounter}></Requests>
+                    {logInWorker.Is_Manager == true && <Requests weeklyCounter={weeklyCounter}></Requests>}
 
                     {/* {showSwipeButton && schedules[`${weeklyCounter}`] != null && schedules[`${weeklyCounter}`][selecteddayoftheWeek.toString()] != null && schedules[`${weeklyCounter}`][selecteddayoftheWeek.toString()][`${shift}`] != null && schedules[`${weeklyCounter}`][selecteddayoftheWeek.toString()][`${shift}`].length == 0 &&  */}
                     {weeklyCounter >= 0 && logInWorker.Is_Manager == true && (<SwipeButton railBackgroundColor='lightgray'
@@ -403,15 +383,15 @@ export default function Menu() {
                     makeSchedule();
 
                 }}
-                onCancel={()=>{
+                onCancel={() => {
                     this.AlertPro.close();
                 }}
                 title="New Schedule Alert!"
                 message='Are You Sure?                                                                *Old Schedule Will Be Removed*'
                 textCancel="Cancel"
                 textConfirm="Yes"
-                
-                
+
+
                 customStyles={{
                     mask: {
                         backgroundColor: "transparent"
@@ -434,6 +414,7 @@ export default function Menu() {
 
 
             {scheduleStr}
+            {deleteStr}
         </SafeAreaView>
     )
 }

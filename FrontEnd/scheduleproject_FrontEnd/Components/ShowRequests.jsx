@@ -1,6 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useEffect,useState } from 'react'
 import { View, Text ,StyleSheet} from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 //npm install react-native-table-component
 import { Table, Row, Rows } from 'react-native-table-component';
 
@@ -8,6 +9,8 @@ export default function ShowRequests(props) {
   const headers = ['Date', 'Morning', 'Evening', 'night'];
   const data = props.requests;
   const [requestdata, setrequestdata] = useState();
+  const [widthArr, setWidthArr] = useState([100, 100, 100, 100]);
+
   function FormatDate(got_date) {
     const date = new Date(got_date);
     const year = date.getFullYear();
@@ -16,6 +19,7 @@ export default function ShowRequests(props) {
     const formattedMonth = String(month).padStart(2, "0");
     const formattedday = String(day).padStart(2, "0");
     const formattedDate = `${year}/${formattedMonth}/${formattedday}`;
+
     return formattedDate;
   }
   function sortByDate(arr) {
@@ -72,18 +76,28 @@ export default function ShowRequests(props) {
 
 
   return (
-    <View>
-      <View style={styles.container}>
+    <ScrollView horizontal={true} >
+
+    <View style={{marginLeft:15}}>
+      <Table borderStyle={{ borderWidth: 1, borderColor: '#C1C0B9' }}>
+      <Row data={headers} widthArr={widthArr} style={styles.header} textStyle={styles.text}/>
+            </Table>
+            <ScrollView style={styles.dataWrapper}>
+
         <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
-          <Row data={headers} style={styles.head} textStyle={styles.text}/>
-          <Rows data={requestdata} textStyle={styles.text}/>
+          <Rows widthArr={widthArr} data={requestdata} style={styles.row} textStyle={styles.text}/>
         </Table>
+        </ScrollView>
+
       </View>
-    </View>
+      </ScrollView>
+
   )
 }
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff' },
-  head: { height: 40, backgroundColor: '#f1f8ff' },
-  text: { margin: 6 }
+  header: { height: 50, backgroundColor: '#00BFFF' },
+  dataWrapper: { marginTop: -1 },
+  row: { height: 40, backgroundColor: 'lightgrey' },
+  text: { textAlign: 'center', fontWeight: '100', color: 'black', fontWeight: 'bold' },
 });

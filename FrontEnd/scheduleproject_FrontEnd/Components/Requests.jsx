@@ -10,7 +10,7 @@ export default function Requests(props) {
   const { logInWorker, apiUrl } = useContext(Context);
   const [requests, setRequests] = useState([]);
   const [tableHead, setTableHead] = useState(['Worker Name', 'Date', 'Type', 'Priorety']);
-  const [widthArr, setWidthArr] = useState([120, 120, 120, 120]);
+  const [widthArr, setWidthArr] = useState([110, 110, 110, 110]);
   const [visible, setVisible] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [clicked, setClicked] = useState(false);

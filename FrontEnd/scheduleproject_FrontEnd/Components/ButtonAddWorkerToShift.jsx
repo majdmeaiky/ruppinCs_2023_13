@@ -77,7 +77,7 @@ useEffect(() => {
     };
 
     const addWorkerToShift = (worker) => {
-        setDisabled(!disabled);
+        // setDisabled(!disabled);
 
         const Worker_Id = worker.Worker_Id;
         const Company_Name = worker.Company_Name;

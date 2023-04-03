@@ -1,3 +1,4 @@
+import { LogBox } from 'react-native';
 import 'react-native-gesture-handler';
 import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, TextInput, Image, FlatList, TouchableOpacity } from 'react-native';
@@ -16,6 +17,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 
 
 export default function App() {
+  LogBox.ignoreAllLogs();
   const Drawer = createDrawerNavigator();
   // const {logInWorker, setlogInWorker} = useContext(FCContextProvider);
   return (

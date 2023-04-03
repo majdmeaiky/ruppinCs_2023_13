@@ -3,7 +3,7 @@ import { DrawerContentScrollView, DrawerItem, DrawerItemList, item } from '@reac
 import { ImageBackground, View, Image, Text } from 'react-native';
 import { Context } from '../Components/FCContext'
 import { Icon } from '@rneui/base';
-// import * as FileSystem from 'expo-file-system';
+import { useNavigation } from '@react-navigation/native';
 
 export default function CustomDrawer(props) {
   const { logInWorker, setlogInWorker, workers, setWorkers } = useContext(Context);
@@ -50,6 +50,16 @@ export default function CustomDrawer(props) {
   //   getImageFiles();
   // },);
 
+  const navigation = useNavigation();
+
+  function handleLogout() {
+    // Call your logout API or clear the user token here
+    navigation.resetRoot({
+      index: 0,
+      routes: [{ name: 'LogIn' }],
+    });
+  }
+
   return (
     <View style={{ flex: 1 }} source={require('../abstract-grunge-decorative-relief-navy-blue-stucco-wall-texture-wide-angle-rough-colored-background.jpg')}>
       <DrawerContentScrollView {...props} contentContainerStyle={{ backgroundColor: '#0186FF' }}>
@@ -89,27 +99,20 @@ export default function CustomDrawer(props) {
                 onPress={() => props.navigation.navigate('AskRequest')}
               />}
 
-            <DrawerItem
+<DrawerItem
+              label="Log Out"
+              onPress={() => handleLogout()}/>
+          
+            
+
+
+            {/* <DrawerItem
               label="Settings"
               onPress={() => props.navigation.navigate('Settings')}
-            />
+            /> */}
           </View>
-          {/* ):   <View>
-        <DrawerItem
-          label="Home"
-          onPress={() => props.navigation.navigate('Menu')}
-        />
         
-        <DrawerItem
-          label="AskRequest"
-          onPress={() => props.navigation.navigate('AskRequest')}
-        />
-         
-         <DrawerItem
-          label="Settings"
-          onPress={() => props.navigation.navigate('Settings')}
-        />
-        </View>} */}
+     
 
           <DrawerItemList {...props} />
 

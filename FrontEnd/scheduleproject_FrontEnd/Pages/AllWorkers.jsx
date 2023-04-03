@@ -1,22 +1,19 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { ScrollView, StyleSheet, SafeAreaView, View, Text, Image, TouchableOpacity } from 'react-native';
 import Header from '../Components/Header';
-import { Button, Card, Overlay } from '@rneui/themed';
+import { Card, Overlay } from '@rneui/themed';
 import { SearchBar } from '@rneui/base';
-// import WorkerDetails from '../Components/WorkerDetails';
 
 import { Context } from '../Components/FCContext'
 import ButtonAddNewWorker from '../Components/ButtonAddNewWorker';
 import WorkerDetails from '../Components/WorkerDetails';
-import { useFocusEffect } from '@react-navigation/native';
 
 export default function AllWorkers() {
   const [search, setSearch] = useState('');
   const [vieworkerVisible, setVieworkerVisible] = useState(false);
 
-  const { logInWorker, setlogInWorker, workers, setWorkers, addworkerVisible, setAddworkerVisible,apiUrl } = useContext(Context);
+  const { logInWorker, workers, setWorkers, addworkerVisible, setAddworkerVisible,apiUrl } = useContext(Context);
   const [selectedWorker, setSelectedWorker] = useState();
-const [counter, setCounter] = useState(0);
   const toggleOverlayAddWorker = () => {
     setAddworkerVisible(!addworkerVisible);
   };
@@ -86,6 +83,9 @@ const [counter, setCounter] = useState(0);
   workers.filter((worker) => worker.Name.includes(search)) :
   workers;
 
+const ondeleteWorker=()=>{
+
+};
 
   const workerStr = filteredWorkers.map((worker) =>
     <TouchableOpacity onPress={() => { toggleOverlayVieWorker(worker) }}>
@@ -139,7 +139,7 @@ const [counter, setCounter] = useState(0);
           </Overlay>
 
           <Overlay isVisible={vieworkerVisible} onBackdropPress={toggleOverlayVieWorker} overlayStyle={{ position: 'absolute', bottom: 0, width: '100%' }}>
-            <WorkerDetails worker={selectedWorker}></WorkerDetails>
+            <WorkerDetails worker={selectedWorker} ondeleteWorker={toggleOverlayVieWorker}></WorkerDetails>
           </Overlay>
     </View>
 </SafeAreaView>

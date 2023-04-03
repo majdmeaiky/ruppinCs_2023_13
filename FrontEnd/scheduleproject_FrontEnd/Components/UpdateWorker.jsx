@@ -1,114 +1,52 @@
-import React, { useState, useContext, useEffect } from 'react'
-import { StyleSheet, Text, View, SafeAreaView, TextInput, Image, FlatList, TouchableOpacity } from 'react-native';
-import { Button, Card } from '@rneui/themed';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import React, { useState, useContext } from 'react'
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { Button } from '@rneui/themed';
 import { Input } from 'react-native-elements';
 import EvilIcon from '@expo/vector-icons/EvilIcons'
-import DateTimePicker from '@react-native-community/datetimepicker';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Context } from './FCContext'
-
-// install react-native-modal-datetime-picker
-//install react-native-community
 import { CheckBox } from 'react-native-elements'
 import * as ImagePicker from 'expo-image-picker'
-import * as FileSystem from 'expo-file-system';
-
-//import TextDate from './Pages/TextDate';
 
 export default function UpdateWorker(props) {
 
-  const { logInWorker, setlogInWorker, workers, setWorkers,apiUrl } = useContext(Context);
+  const { logInWorker ,setWorkers,apiUrl } = useContext(Context);
+  const { worker, onUpdateWorker } = props;
 
-  const [datepicked, setdatepicked] = useState(props.worker.Start_Date);
+  const [datepicked, setdatepicked] = useState(worker.Start_Date);
   const [datepickedString, setdatepickedString] = useState(FormatDate(datepicked));
-
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+
   // input sates
-  const [check, setcheck] = useState(props.worker.Is_Manager == 0 ? true : false);
-  const [image, setImage] = useState(props.worker.Image);
-  const [worker_Id, setWorker_Id] = useState(props.worker.Worker_Id);
-  const [full_name, setFull_name] = useState(props.worker.Name);
-  const [email, setEmail] = useState(props.worker.Email);
-
-
-
-
-
-  // const createDirectory = async () => {
-  //   const rootDirectory = FileSystem.documentDirectory;
-  //   const directoryName = logInWorker.Company_Name;
-  //   const directoryPath = `${rootDirectory}${directoryName}`;
-  //   const directoryExists = await FileSystem.getInfoAsync(directoryPath);
-  //   if (!directoryExists.exists) {
-  //     await FileSystem.makeDirectoryAsync(directoryPath, { intermediates: true });
-  //     console.log(`Directory created at: ${directoryPath}`);
-
-  //   }
-  //   else {
-  //     console.log('directory found');
-  //     const directoryContents = await FileSystem.readDirectoryAsync(directoryPath);
-  //     const imageFiles = directoryContents.filter(file => /\.(jpg|jpeg|png)$/i.test(file));
-  //     console.log(`Found ${imageFiles.length} images in directory: ${directoryPath}`);
-  //     console.log(imageFiles[0]);
-
-  //   }
-  // };
-
-  // const saveImage = async (imageUri, workerId) => {
-  //   const directory = `${FileSystem.documentDirectory}${logInWorker.Company_Name}`;
-  //   const extension = imageUri.split(".").pop();
-  //   const filename = `${workerId}.${extension}`;
-  //   const newPath = `${directory}/${filename}`;
-
-  //   const fileInfo = await FileSystem.getInfoAsync(newPath);
-  //   if (fileInfo.exists) {
-  //     return;
-  //   } else {
-  //     await FileSystem.copyAsync({
-  //       from: imageUri,
-  //       to: newPath,
-  //     });
-
-  //   }
-  // };
-
-
-
-  // const getImage = async () => {
-  //   const directory = `${FileSystem.documentDirectory}${logInWorker.Company_Name}`;
-  //   const imageArray = await FileSystem.readDirectoryAsync(directory);
-  //   const imageFile = imageArray[0];
-  //   const imageUri = `${directory}/${imageFile}`;
-  //   setImage(imageUri);
-  // };
-
+  const [check, setcheck] = useState(worker.Is_Manager == 0 ? true : false);
+  const [image, setImage] = useState(worker.Image);
+  const [worker_Id, setWorker_Id] = useState(worker.Worker_Id);
+  const [full_name, setFull_name] = useState(worker.Name);
+  const [email, setEmail] = useState(worker.Email);
+const [disabled, setDisabled] = useState(false);
 
   const pickImage = async () => {
-    // await createDirectory();
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
+      base64:true
     });
     console.log(result);
     if (!result.canceled) {
-      const imageUri = result.assets[0].uri;
-      // await saveImage(imageUri, workerId);
+      const imageUri = result.assets[0].base64;
       setImage(imageUri);
-      // setUploaded(true);
-      // await getImage();
-
     }
   };
 
+  const handleUpdate = (updatedWorker) => {
+    onUpdateWorker(updatedWorker);
+  };
 
   const UpdateWorker = async () => {
-    // if (image != '') {
-    //   await saveImage(image, worker_Id);
-    // }
+    setDisabled(!disabled);
     const worker = {
       "Worker_Id": worker_Id,
       "Name": full_name,
@@ -116,7 +54,7 @@ export default function UpdateWorker(props) {
       "Start_Date": datepicked,
       "Is_Manager": check,
       "Company_Code": logInWorker.Company_Code,
-      //"Image": base64
+      "Image": image
     };
     console.log(worker);
     fetch(apiUrl+`Workers`, {
@@ -132,7 +70,7 @@ export default function UpdateWorker(props) {
       .then(res => {
       })
       .then((data) => {
-        alert('worker added successfuly')
+        handleUpdate(worker);
         fetch(apiUrl+`Workers?Company_Code=${logInWorker.Company_Code}`, {
           method: 'GET',
           headers: new Headers({
@@ -140,8 +78,6 @@ export default function UpdateWorker(props) {
             'Content-Type': 'application/json; charset=UTF-8',
 
           }),
-          // body: JSON.stringify({ Company_Code }),
-
         })
           .then(res => {
             return res.json()
@@ -181,15 +117,6 @@ export default function UpdateWorker(props) {
   };
 
 
-  function OnDateSelected(event, value) {
-    console.log(event);
-    console.log(value);
-
-    if (event.type != 'dismissed') {
-      setdate(value);
-    }
-    setdatePicker(false);
-  }
 
   function FormatDate (got_date)
   {
@@ -201,18 +128,18 @@ export default function UpdateWorker(props) {
       const formattedday = String(day).padStart(2, "0");
       const formattedDate = `${year}/${formattedMonth}/${formattedday}`;
       return formattedDate;
-  }
+  };
 
   return (
 
-    <View style={styles.container}>
+    <View  style={styles.container}>
       <View>
         <Text style={styles.HeaderTXT}>Update Worker</Text>
       </View>
       <View style={styles.container}>
-        <TouchableOpacity onPress={() => worker_Id ? pickImage() : alert('aa')}>
+        <TouchableOpacity disabled={disabled} onPress={() => worker_Id ? pickImage() : alert('aa')}>
           {!image && <Image source={require('../assets/avatar.jpeg')} style={styles.image} />}
-          {image &&             <Image source={{ uri: `data:image/png;base64,${props.worker.Image}` }} style={styles.image} />
+          {image &&             <Image source={{ uri: `data:image/png;base64,${image}` }} style={styles.image} />
 }
         </TouchableOpacity>
       </View>
@@ -247,12 +174,13 @@ export default function UpdateWorker(props) {
         value={email}
         onChangeText={setEmail}
         inputStyle={{ color: 'grey' }}
-
+disabled={disabled}
         leftIcon={
           <EvilIcon name='envelope' size={25} color='#00BFFF' />
         }
       />
-      <TouchableOpacity onPress={showDatePicker}>
+      <TouchableOpacity onPress={showDatePicker} disabled={disabled}
+>
         <Input
           disabledInputStyle={{ color: 'black' }}
           value={datepickedString}
@@ -264,6 +192,7 @@ export default function UpdateWorker(props) {
         />
       </TouchableOpacity>
       <DateTimePickerModal
+      disabled={disabled}
         isVisible={isDatePickerVisible}
         mode="date"
         onConfirm={handleConfirm}
