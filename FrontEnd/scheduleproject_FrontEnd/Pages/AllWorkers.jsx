@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { ScrollView, StyleSheet, SafeAreaView, View, Text, Image, TouchableOpacity } from 'react-native';
 import Header from '../Components/Header';
-import {  Card, Overlay } from '@rneui/themed';
+import { Card, Overlay } from '@rneui/themed';
 import { SearchBar } from '@rneui/base';
 
 import { Context } from '../Components/FCContext'
@@ -12,11 +12,11 @@ export default function AllWorkers() {
   const [search, setSearch] = useState('');
   const [vieworkerVisible, setVieworkerVisible] = useState(false);
 
-  const { logInWorker, workers, setWorkers,apiUrl } = useContext(Context);
+  const { logInWorker, workers, setWorkers, apiUrl } = useContext(Context);
   const [selectedWorker, setSelectedWorker] = useState();
 
 
-///////////////////////// showing the overlay when clicking on worker card
+  ///////////////////////// showing the overlay when clicking on worker card
   const toggleOverlayVieWorker = (worker) => {
     setSelectedWorker(worker);
     setVieworkerVisible(!vieworkerVisible);
@@ -24,7 +24,7 @@ export default function AllWorkers() {
 
   /////////////////////////// get all workers for the first time
   useEffect(() => {
-    fetch(apiUrl+`Workers?Company_Code=${logInWorker.Company_Code}`, {
+    fetch(apiUrl + `Workers?Company_Code=${logInWorker.Company_Code}`, {
       method: 'GET',
       headers: new Headers({
         'Accept': 'application/json; charset=UTF-8',
@@ -46,11 +46,11 @@ export default function AllWorkers() {
   }, []);
 
   ////////////////////// making responsive workers array to handle search bar
-  const filteredWorkers = search ? 
-  workers.filter((worker) => worker.Name.includes(search)) :
-  workers;
+  const filteredWorkers = search ?
+    workers.filter((worker) => worker.Name.includes(search)) :
+    workers;
 
-////////////////// mapping a cards for all workers that reponse for the search bar
+  ////////////////// mapping a cards for all workers that reponse for the search bar
   const workerStr = filteredWorkers.map((worker) =>
     <TouchableOpacity onPress={() => { toggleOverlayVieWorker(worker) }}>
       <Card containerStyle={{ borderRadius: 10, height: 200, width: 170, margin: 22 }} >
@@ -74,39 +74,39 @@ export default function AllWorkers() {
   return (
 
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-  <ScrollView scrollEnabled={false}>
-      <Header></Header>
+      <ScrollView scrollEnabled={false}>
+        <Header></Header>
       </ScrollView>
 
       <View style={styles.container}>
 
-    {/* add worker component */}
-      <ButtonAddNewWorker></ButtonAddNewWorker>
+        {/* add worker component */}
+        <ButtonAddNewWorker></ButtonAddNewWorker>
 
-      <SearchBar inputStyle={{ backgroundColor: 'white' }}
-        containerStyle={{ backgroundColor: 'white', borderWidth: 1, borderRadius: 5, margin: 10, width: 350, alignSelf: 'center' }}
-        onChangeText={setSearch}
-        value={search}
-      />
-<ScrollView>
-      <View
-        style={{
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          justifyContent: 'space-between',
-        }}
-      >
-        {workerStr}
+        <SearchBar inputStyle={{ backgroundColor: 'white' }}
+          containerStyle={{ backgroundColor: 'white', borderWidth: 1, borderRadius: 5, margin: 10, width: 350, alignSelf: 'center' }}
+          onChangeText={setSearch}
+          value={search}
+        />
+        <ScrollView>
+          <View
+            style={{
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              justifyContent: 'space-between',
+            }}
+          >
+            {workerStr}
+          </View>
+        </ScrollView>
+
+        <Overlay isVisible={vieworkerVisible} onBackdropPress={toggleOverlayVieWorker} overlayStyle={{ position: 'absolute', bottom: 0, width: '100%' }}>
+          <WorkerDetails worker={selectedWorker} ondeleteWorker={toggleOverlayVieWorker}></WorkerDetails>
+        </Overlay>
       </View>
-      </ScrollView>
-
-          <Overlay isVisible={vieworkerVisible} onBackdropPress={toggleOverlayVieWorker} overlayStyle={{ position: 'absolute', bottom: 0, width: '100%' }}>
-            <WorkerDetails worker={selectedWorker} ondeleteWorker={toggleOverlayVieWorker}></WorkerDetails>
-          </Overlay>
-    </View>
-</SafeAreaView>
+    </SafeAreaView>
   )
 }
 const styles = StyleSheet.create({
-  container: { flex: 1,marginTop:-720 }
+  container: { flex: 1, marginTop: -720 }
 });

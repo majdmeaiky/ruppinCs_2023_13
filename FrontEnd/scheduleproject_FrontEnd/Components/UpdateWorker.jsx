@@ -35,7 +35,6 @@ export default function UpdateWorker(props) {
       quality: 1,
       base64: true
     });
-    console.log(result);
     if (!result.canceled) {
       const imageUri = result.assets[0].base64;
       setImage(imageUri);
@@ -85,7 +84,6 @@ export default function UpdateWorker(props) {
             return res.json()
           })
           .then((data) => {
-            console.log(data);
             setWorkers(data);
 
           })

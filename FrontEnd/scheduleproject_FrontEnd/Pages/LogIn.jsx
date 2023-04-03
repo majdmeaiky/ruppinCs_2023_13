@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext } from 'react'
 import { StyleSheet, Text, View, SafeAreaView, TextInput, Image } from 'react-native';
 import { Button } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
@@ -8,12 +8,8 @@ export default function LogIn() {
   const navigation = useNavigation();
   const [Worker_Id, setWorker_Id] = useState();
   const [Company_Code, setCompany_Code] = useState('');
-  const {  setlogInWorker, apiUrl } = useContext(Context);
+  const { setlogInWorker, apiUrl } = useContext(Context);
   const [isValid, setIsValid] = useState(true);
-
-  useEffect(() => {
-    setlogInWorker({})
-  }, []);
 
   const checkLogIn = () => {
 

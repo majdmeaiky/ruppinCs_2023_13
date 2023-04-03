@@ -2,58 +2,15 @@ import React, { useContext, useEffect, useState } from 'react'
 import { DrawerContentScrollView, DrawerItem, DrawerItemList, item } from '@react-navigation/drawer';
 import { ImageBackground, View, Image, Text } from 'react-native';
 import { Context } from '../Components/FCContext'
-import { Icon } from '@rneui/base';
 import { useNavigation } from '@react-navigation/native';
 
 export default function CustomDrawer(props) {
-  const { logInWorker, setlogInWorker, workers, setWorkers } = useContext(Context);
-  const [imageFound, setImageFound] = useState(false);
+  const { logInWorker } = useContext(Context);
 
-  // useEffect(() => {
-  // console.log(logInWorker.Image);
-  // })
-
-  // const getImagesInDirectory = async () => {
-  //   const rootDirectory = FileSystem.documentDirectory;
-  //   const directoryName = logInWorker.Company_Name;
-  //   const directoryPath = `${rootDirectory}${directoryName}`;
-  //   const directoryContents = await FileSystem.readDirectoryAsync(directoryPath);
-  //   const imageFiles = directoryContents.filter(file => /\.(jpg|jpeg|png)$/i.test(file));
-  //   return imageFiles;
-  // };
-
-  // useEffect(() => {
-  //   const getImageFiles = async () => {
-  //     if (logInWorker) {
-  //       const images = await getImagesInDirectory();
-  //       images.map((image) => {
-  //         const id = image.split('.')[0];
-  //         if (parseInt(id) == logInWorker.Worker_Id) {
-  //           setImageFound(true);
-  //           const rootDirectory = FileSystem.documentDirectory;
-  //           const directoryName = logInWorker.Company_Name;
-  //           const fileName = image // the file name of the image you want to display
-  //           const filePath = `${rootDirectory}${directoryName}/${fileName}`;
-
-  //           setlogInWorker({
-  //             ...logInWorker, // copy the current state object
-  //             ["Image"]: filePath,
-  //           });
-
-  //         }
-  //       })
-  //       // console.log(images);
-  //       // console.log(logInWorker.Image);
-  //     }
-  //   };
-
-  //   getImageFiles();
-  // },);
 
   const navigation = useNavigation();
 
   function handleLogout() {
-    // Call your logout API or clear the user token here
     navigation.resetRoot({
       index: 0,
       routes: [{ name: 'LogIn' }],
@@ -80,18 +37,17 @@ export default function CustomDrawer(props) {
               label="Home"
               onPress={() => props.navigation.navigate('Menu')}
             />
-{/* make it in one if!!!!!!!!!! */}
             {logInWorker && logInWorker.Is_Manager === true &&
-            <View>
+              <View>
 
-              < DrawerItem
-                label="AllWorkers"
-                onPress={() => props.navigation.navigate('AllWorkers')}
-              />
-              
-                </View>
+                < DrawerItem
+                  label="Workers"
+                  onPress={() => props.navigation.navigate('AllWorkers')}
+                />
 
-              }
+              </View>
+
+            }
 
             {logInWorker && logInWorker.Is_Manager === false &&
               < DrawerItem
@@ -99,20 +55,11 @@ export default function CustomDrawer(props) {
                 onPress={() => props.navigation.navigate('AskRequest')}
               />}
 
-<DrawerItem
+            <DrawerItem
               label="Log Out"
-              onPress={() => handleLogout()}/>
-          
-            
-
-
-            {/* <DrawerItem
-              label="Settings"
-              onPress={() => props.navigation.navigate('Settings')}
-            /> */}
+              onPress={() => handleLogout()} />
           </View>
-        
-     
+
 
           <DrawerItemList {...props} />
 

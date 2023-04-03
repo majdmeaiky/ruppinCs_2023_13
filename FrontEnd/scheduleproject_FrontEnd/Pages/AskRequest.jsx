@@ -70,11 +70,8 @@ export default function AskRequest() {
     const [requestSentStr, setRequestSentStr] = useState();
     const [requestnotValid, setRequestnotValid] = useState();
 
-    // useEffect(() => {
-    //     setprevrequest();
-    // }, [])
 
-//////////////////////// checking if there is prev requests for a worker and handle the disable of radio buttons
+    //////////////////////// checking if there is prev requests for a worker and handle the disable of radio buttons
     const fetchRequests = () => {
         fetch(apiUrl + 'RequestsFromClient?Worker_Id=' + logInWorker.Worker_Id + '&Company_Name=' + logInWorker.Company_Name + '&weeklyCounter=' + weeklyCounter, {
             method: 'GET',
@@ -88,8 +85,6 @@ export default function AskRequest() {
                 return res.json()
             })
             .then((data) => {
-                console.log('request length', data.length);
-                console.log('request', data);
                 if (data.length == 0) {
                     setcanSubmit(false);
                 }
@@ -106,7 +101,7 @@ export default function AskRequest() {
             });
 
     };
-////////////// calling fetchRequest when moving to another week
+    ////////////// calling fetchRequest when moving to another week
     useEffect(() => {
         fetchRequests();
     }, [weeklyCounter])
@@ -114,15 +109,12 @@ export default function AskRequest() {
     /////////////////////// initiallize a new dictionery for a new week
     const CreateDictionary = ((start) => {
         const startDate = new Date(start);
-        console.log('startDate', startDate);
         const dictDate = new Date(startDate);
-        console.log('dictDate', dictDate);
         const dict = {};
 
         for (let i = 0; i < 7; i++) {
             dictDate.setDate(startDate.getDate() + i);
             const formattedDate = FormatDate(dictDate);
-            console.log('formattedDate', formattedDate);
             dict[formattedDate] = {
                 ['M']: { "priorety": 3 },
                 ['E']: { "priorety": 3 },
@@ -132,14 +124,12 @@ export default function AskRequest() {
         return dict;
     });
 
-/////////////////// calculate difference in weeks between 2 dates
+    /////////////////// calculate difference in weeks between 2 dates
     const DateDifference = (newDate, oldDate) => {
         const startNew = getSunday1(newDate);
         startNew.setHours(0, 0, 0, 1);
-        console.log('startNew', startNew);
         const startOld = getSunday1(oldDate);
         startOld.setHours(0, 0, 0, 1);
-        console.log('startOld', startOld);
         const diffInMs = Math.abs(startNew - startOld);
         const diffInWeeks = Math.floor(diffInMs / (1000 * 60 * 60 * 24 * 7));
         if (startNew >= startOld) {
@@ -152,10 +142,10 @@ export default function AskRequest() {
     //////////////////// when selecting a date making a new dictionery and chacking valid day
     const onDateSelected = (date) => {
         const weekdiff = DateDifference(date, selectedDate);
-        console.log('weekdiff', weekdiff);
         if (weekdiff != 0) {
             const initNewWeekRequest = CreateDictionary(getSunday1(date));
             setrequsts(initNewWeekRequest);
+            setmarkedDates([]);
         }
         if (ChechDayValid(requsts[FormatDate(selectedDate)])) {
             const add = {
@@ -189,9 +179,8 @@ export default function AskRequest() {
 
 
 
-/////////////////////////// retrive each day requests
+    /////////////////////////// retrive each day requests
     useEffect(() => {
-        console.log('weeklyCounter', weeklyCounter);
         const resetMorning = requsts[FormatDate(selectedDate)];
         const M = resetMorning['M']['priorety'];
         const E = resetMorning['E']['priorety'];
@@ -269,7 +258,6 @@ export default function AskRequest() {
                 requestArr[formattedDate]["M"] = toAdd;
             }
 
-            console.log('toAdd', toAdd);
             setrequsts(requestArr);
         }
         catch {
@@ -322,7 +310,6 @@ export default function AskRequest() {
                 requestArr[formattedDate]["E"] = toAdd;
             }
 
-            console.log('toAdd', toAdd);
             setrequsts(requestArr);
         }
         catch {
@@ -372,7 +359,6 @@ export default function AskRequest() {
                 requestArr[formattedDate]["N"] = toAdd;
             }
 
-            console.log('toAdd', toAdd);
             setrequsts(requestArr);
         }
         catch {
@@ -383,7 +369,7 @@ export default function AskRequest() {
 
     }, [radioButtonsNight])
 
-///////////////////////////////// checking if there is at least one request priorerty not equal to 3
+    ///////////////////////////////// checking if there is at least one request priorerty not equal to 3
     const ChechDayValid = (day) => {
         let counter = 0;
         let requestcounter = 0;
@@ -595,11 +581,9 @@ const styles = StyleSheet.create({
         fontSize: 25,
         textAlign: 'center',
         marginBottom: 10
-        // F4C180
     },
     shiftview: {
-        // borderColor:'lightgray',
-        // borderWidth:1,
+
         backgroundColor: '#E2F8F9',
         borderRadius: 10,
         marginBottom: 20,

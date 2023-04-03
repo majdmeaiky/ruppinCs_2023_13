@@ -1,14 +1,10 @@
-import React, { useState, useContext, useEffect } from 'react'
-import { StyleSheet, Text, View, SafeAreaView, TextInput, Image, FlatList, TouchableOpacity } from 'react-native';
-import { Button, Card, Overlay } from '@rneui/themed';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import React, { useState, useContext } from 'react'
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { Button, Overlay } from '@rneui/themed';
 import { Input } from 'react-native-elements';
 import EvilIcon from '@expo/vector-icons/EvilIcons'
-import DateTimePicker from '@react-native-community/datetimepicker';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Context } from '../Components/FCContext'
-import { useNavigation } from '@react-navigation/native';
-import AwesomeAlert from 'react-native-awesome-alerts';
 import AlertPro from "react-native-alert-pro";
 
 import { CheckBox } from 'react-native-elements'
@@ -33,7 +29,7 @@ export default function ButtonAddNewWorker() {
   const [disabled, setDisabled] = useState(false);
 
 
-/////////// picking image from gallery 
+  /////////// picking image from gallery 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -69,7 +65,6 @@ export default function ButtonAddNewWorker() {
       "Shift_Id": -1,
       "Image": base64
     };
-    console.log(worker);
     fetch(apiUrl + `Workers/AddWorker`, {
       method: 'POST',
       headers: new Headers({
@@ -98,28 +93,27 @@ export default function ButtonAddNewWorker() {
           confirmText="OK"
         />);
         this.AlertPro.open();
-setTimeout(() => {
-  fetch(apiUrl + `Workers?Company_Code=${logInWorker.Company_Code}`, {
-    method: 'GET',
-    headers: new Headers({
-      'Accept': 'application/json; charset=UTF-8',
-      'Content-Type': 'application/json; charset=UTF-8',
+        setTimeout(() => {
+          fetch(apiUrl + `Workers?Company_Code=${logInWorker.Company_Code}`, {
+            method: 'GET',
+            headers: new Headers({
+              'Accept': 'application/json; charset=UTF-8',
+              'Content-Type': 'application/json; charset=UTF-8',
 
-    }),
-  })
-    .then(res => {
-      return res.json()
-    })
-    .then((data) => {
-      console.log(data);
-      setWorkers(data);
-    })
+            }),
+          })
+            .then(res => {
+              return res.json()
+            })
+            .then((data) => {
+              setWorkers(data);
+            })
 
-    .catch((error) => {
-      console.error('Error:', error);
+            .catch((error) => {
+              console.error('Error:', error);
 
-    });
-}, 2000);
+            });
+        }, 2000);
       })
 
       .catch((error) => {
@@ -127,7 +121,7 @@ setTimeout(() => {
 
       });
     setTimeout(() => {
-toggleOverlayAddWorker();
+      toggleOverlayAddWorker();
     }, 2000);
 
   };
@@ -180,7 +174,7 @@ toggleOverlayAddWorker();
             <Text style={styles.HeaderTXT}>Add Worker</Text>
           </View>
           <View style={styles.container}>
-            <TouchableOpacity onPress={() => worker_Id ? pickImage() : alert('You Have To Enter ID First')}>
+            <TouchableOpacity onPress={() => pickImage()}>
               {!image && <Image source={require('../assets/avatar.jpeg')} style={styles.image} />}
               {image && <Image source={{ uri: image }} style={styles.imagePicked} />}
             </TouchableOpacity>

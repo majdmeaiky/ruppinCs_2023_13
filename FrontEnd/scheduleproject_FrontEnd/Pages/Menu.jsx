@@ -15,10 +15,11 @@ import AlertPro from "react-native-alert-pro";
 
 
 export default function Menu() {
-    const { logInWorker, schedules, setSchedules, apiUrl } = useContext(Context);
-    const [weeklyCounter, setWeeklyCounter] = useState(0);
-    const [selecteddayoftheWeek, setselecteddayoftheWeek] = useState(Number);
+    const { logInWorker, schedules, setSchedules, apiUrl, weeklyCounter, setWeeklyCounter } = useContext(Context);
+
     const [selectedDate, setSelectedDate] = useState(new Date());
+    const [selecteddayoftheWeek, setselecteddayoftheWeek] = useState(new Date().getDay());
+
     const [startingDate, setStartingDate] = useState(getSunday1(selectedDate));
     const [selectedTab, setSelectedTab] = useState(0);
     const [shift, setShift] = useState('M');
@@ -28,19 +29,20 @@ export default function Menu() {
     const [scheduleStr, setScheduleStr] = useState();
     const [deleteStr, setDeleteStr] = useState();
 
+
     ////////////////////////////to make the calendar strip start from the current sunday
     function getSunday1(date) {
         const sunday = new Date(date);
         sunday.setDate(new Date(date).getDate() - new Date(date).getDay());
         return sunday;
     };
-//////////////////////////////// when selecting a date
+    //////////////////////////////// when selecting a date
     const onDateSelected = (date) => {
         setSelectedDate(date);
         setStartingDate(getSunday1(date));
         setselecteddayoftheWeek((new Date(date).getDay()));
     };
-  ///////////////////////// updating shift state after selecting shift tab to render workers
+    ///////////////////////// updating shift state after selecting shift tab to render workers
     const handleIndexChange = (tab) => {
         setSelectedTab(tab);
         if (tab == 0) {
@@ -58,7 +60,7 @@ export default function Menu() {
         setSelectedWorker(worker);
         setVieworkerVisible(!vieworkerVisible);
     };
-/////////////////////////////// make new weekly schedule
+    /////////////////////////////// make new weekly schedule
     const makeSchedule = () => {
         fetch(apiUrl + `Schedule/CreateSchedule?Company_Code=${logInWorker.Company_Code}&weeklycounter=${weeklyCounter}`, {
             method: 'GET',
@@ -110,7 +112,7 @@ export default function Menu() {
 
     };
 
-///////////////////////////////////get weekly schedule for the first time
+    ///////////////////////////////////get weekly schedule for the first time
     useEffect(() => {
         {
             schedules[`${weeklyCounter}`] == null &&
@@ -121,7 +123,7 @@ export default function Menu() {
     }, [weeklyCounter]);
 
 
-////////////////////////////////////////////// get weekly schedule
+    ////////////////////////////////////////////// get weekly schedule
     const getSchedule = (weeklyCounter1) => {
         fetch(apiUrl + `Schedule?Company_Code=${logInWorker.Company_Code}&week_counter=${weeklyCounter1}`, {
             method: 'GET',
@@ -135,7 +137,6 @@ export default function Menu() {
             })
             .then((data) => {
 
-                console.log(data);
                 setSchedules({
                     ...schedules, // copy the current state objecct
                     [`${weeklyCounter}`]: data,
@@ -166,9 +167,8 @@ export default function Menu() {
 
     };
 
-///////////////////////////////////// to delete a worker in shift
+    ///////////////////////////////////// to delete a worker in shift
     const deleteWorkerInShift = (worker) => {
-        console.log(worker.Company_Name);
         const Worker_Id = worker.Worker_Id;
         const Company_Name = worker.Company_Name;
         const Shift_Id = worker.Shift_Id;
@@ -214,19 +214,15 @@ export default function Menu() {
                             [`${weeklyCounter}`]: data,
                             // add the new schedule as a value for the 'Monday' key
                         });
-
                     })
 
                     .catch((error) => {
                         console.error('Error:', error);
-
                     });
-
             })
 
             .catch((error) => {
                 console.error('Error:', error);
-
             });
     };
 
@@ -238,7 +234,6 @@ export default function Menu() {
                 <View style={styles.container}>
 
                     <Header></Header>
-
                     <CalendarStrip
 
                         daySelectionAnimation={{ type: 'border', duration: 200, borderWidth: 3, borderHighlightColor: '#00BFFF' }}
@@ -310,7 +305,7 @@ export default function Menu() {
                                     <Card containerStyle={{ borderRadius: 10, height: 120, backgroundColor: '#E2F8F9' }} key={index}>
                                         <View style={{ flexDirection: 'row', height: '100%' }}>
                                             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-                                                <TouchableOpacity onPress={() => { toggleOverlayVieWorker(item) }}>
+                                                <TouchableOpacity onPress={() => { logInWorker.Is_Manager ? toggleOverlayVieWorker(item) : null }}>
                                                     <Image
                                                         style={{ height: 80, width: 80, borderRadius: 40, marginBottom: 10, marginRight: 30, backgroundColor: '#E2F8F9' }} source={{ uri: `data:image/png;base64,${item["Image"]}` }}
                                                     />
@@ -318,9 +313,9 @@ export default function Menu() {
                                                 <View style={{ flex: 1, justifyContent: 'space-between' }}>
                                                     <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{item["Name"]}</Text>
                                                 </View>
-                                                <TouchableOpacity style={{ marginRight: 20 }} onPress={() => deleteWorkerInShift(item)}>
+                                                {logInWorker.Is_Manager && <TouchableOpacity style={{ marginRight: 20 }} onPress={() => deleteWorkerInShift(item)}>
                                                     <EvilIcon name='trash' size={50} color='black' ></EvilIcon>
-                                                </TouchableOpacity>
+                                                </TouchableOpacity>}
 
                                             </View>
                                         </View>
@@ -350,7 +345,6 @@ export default function Menu() {
                     <View style={{ backgroundColor: 'black', width: '80%', height: 1, alignSelf: 'center', marginTop: 40, marginBottom: 10 }} />
                     {logInWorker.Is_Manager == true && <Requests weeklyCounter={weeklyCounter}></Requests>}
 
-                    {/* {showSwipeButton && schedules[`${weeklyCounter}`] != null && schedules[`${weeklyCounter}`][selecteddayoftheWeek.toString()] != null && schedules[`${weeklyCounter}`][selecteddayoftheWeek.toString()][`${shift}`] != null && schedules[`${weeklyCounter}`][selecteddayoftheWeek.toString()][`${shift}`].length == 0 &&  */}
                     {weeklyCounter >= 0 && logInWorker.Is_Manager == true && (<SwipeButton railBackgroundColor='lightgray'
                         railFillBackgroundColor="gray" //(Optional)
                         railFillBorderColor="#00BFFF" //(Optional)

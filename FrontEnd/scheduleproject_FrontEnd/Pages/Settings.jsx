@@ -20,7 +20,6 @@ export default function Settings() {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <ScrollView>
-
                 <View style={styles.container}>
 
                     <Header></Header>
@@ -33,7 +32,7 @@ export default function Settings() {
                     />
                     {selectedTab === 0 &&
                         <View >
-                            <View style={{ flexDirection: 'row',marginBottom:20 }}>
+                            <View style={{ flexDirection: 'row', marginBottom: 20 }}>
                                 <Icon name="time" size={40} color="black" style={{ marginLeft: 100 }} />
                                 <Icon name="person" size={40} color="black" style={{ marginLeft: 75 }} />
                             </View>
@@ -101,7 +100,7 @@ const styles = StyleSheet.create({
 
         elevation: 6,
     },
-    Shiftscard:{
+    Shiftscard: {
         backgroundColor: '#E2F8F9',
         borderRadius: 10,
         marginBottom: 20,

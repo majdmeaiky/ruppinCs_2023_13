@@ -1,5 +1,5 @@
-import React, { useEffect,useState } from 'react'
-import { View, Text ,StyleSheet} from 'react-native';
+import React, { useEffect, useState } from 'react'
+import { View, StyleSheet } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Table, Row, Rows } from 'react-native-table-component';
 
@@ -23,7 +23,7 @@ export default function ShowRequests(props) {
     return formattedDate;
   };
 
-//////////////// sort inner arrays by date
+  //////////////// sort inner arrays by date
   function sortByDate(arr) {
     arr.sort(function (a, b) {
       return new Date(a[0]) - new Date(b[0]);
@@ -49,7 +49,6 @@ export default function ShowRequests(props) {
 
     dates.forEach((date) => {
       const m = grouped.find((item) => item.date === date).M;
-      console.log('m is', m)
       const e = grouped.find((item) => item.date === date).E;
       const n = grouped.find((item) => item.date === date).N;
       const row = [date, m, e, n];
@@ -65,7 +64,7 @@ export default function ShowRequests(props) {
     return formatted_array;
   };
 
-///////// sets the requests of a worker to requestdata state to render the table
+  ///////// sets the requests of a worker to requestdata state to render the table
   useEffect(() => {
     const result = groupByDateAndType(data);
     setrequestdata(result);
@@ -78,19 +77,19 @@ export default function ShowRequests(props) {
   return (
     <ScrollView horizontal={true} >
 
-    <View style={{marginLeft:15}}>
-      <Table borderStyle={{ borderWidth: 1, borderColor: '#C1C0B9' }}>
-      <Row data={headers} widthArr={widthArr} style={styles.header} textStyle={styles.text}/>
-            </Table>
-            <ScrollView style={styles.dataWrapper}>
-
-        <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
-          <Rows widthArr={widthArr} data={requestdata} style={styles.row} textStyle={styles.text}/>
+      <View style={{ marginLeft: 15 }}>
+        <Table borderStyle={{ borderWidth: 1, borderColor: '#C1C0B9' }}>
+          <Row data={headers} widthArr={widthArr} style={styles.header} textStyle={styles.text} />
         </Table>
+        <ScrollView style={styles.dataWrapper}>
+
+          <Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
+            <Rows widthArr={widthArr} data={requestdata} style={styles.row} textStyle={styles.text} />
+          </Table>
         </ScrollView>
 
       </View>
-      </ScrollView>
+    </ScrollView>
 
   )
 }

@@ -8,23 +8,23 @@ import AlertPro from "react-native-alert-pro";
 
 ////////////////// add worker to shift component
 export default function ButtonAddWorkerToShift(props) {
-    const { logInWorker, setlogInWorker, workers, setWorkers, schedules, setSchedules,apiUrl } = useContext(Context);
+    const { logInWorker, setlogInWorker, workers, setWorkers, schedules, setSchedules, apiUrl } = useContext(Context);
     const [search, setSearch] = useState('');
 
     const [visible, setVisible] = useState(false);
-const [dayOfWeek, setDayOfWeek] = useState('');
-const [disabled, setDisabled] = useState(false);
-const [workerAddeed, setWorkerAddeed] = useState('');
+    const [dayOfWeek, setDayOfWeek] = useState('');
+    const [disabled, setDisabled] = useState(false);
+    const [workerAddeed, setWorkerAddeed] = useState('');
 
-/////// updating dayofweek state 
-useEffect(() => {
-    const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    setDayOfWeek(weekdays[props.DayOfWeek.toLocaleString('en-US', {weekday: 'long'})]);
+    /////// updating dayofweek state 
+    useEffect(() => {
+        const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        setDayOfWeek(weekdays[props.DayOfWeek.toLocaleString('en-US', { weekday: 'long' })]);
     });
 
-/////////////////  get all workers from server
+    /////////////////  get all workers from server
     const toggleOverlayShowWorkers = () => {
-        fetch(apiUrl+`Workers?Company_Code=${logInWorker.Company_Code}`, {
+        fetch(apiUrl + `Workers?Company_Code=${logInWorker.Company_Code}`, {
             method: 'GET',
             headers: new Headers({
                 'Accept': 'application/json; charset=UTF-8',
@@ -38,9 +38,7 @@ useEffect(() => {
                 return res.json()
             })
             .then((data) => {
-                // console.log(data);
                 setWorkers(data);
-                // console.log(workerStr);
 
             })
 
@@ -59,8 +57,7 @@ useEffect(() => {
         const Company_Name = worker.Company_Name;
         const Shift_Id = props.Shift_Id;
         const workerobj = { Worker_Id, Company_Name, Shift_Id };
-        console.log(workerobj);
-        fetch(apiUrl+`WorkerInShift`, {
+        fetch(apiUrl + `WorkerInShift`, {
             method: 'POST',
             headers: new Headers({
                 'Accept': 'application/json; charset=UTF-8',
@@ -70,25 +67,23 @@ useEffect(() => {
             body: JSON.stringify(workerobj),
 
         })
-            
-            .then(() => {
-                console.log(props.weeklyCounter);
 
-                setWorkerAddeed(               <AlertPro
+            .then(() => {
+                setWorkerAddeed(<AlertPro
                     ref={ref => {
                         this.AlertPro = ref;
                     }}
                     title="New Worker Added"
-                         message="Successfuly!"     
-                                            showCancel={false}
+                    message="Successfuly!"
+                    showCancel={false}
                     showConfirm={false}
                     confirmText="OK"
-                  />
-                  
-                  );
-                  this.AlertPro.open();
-                  
-                fetch(apiUrl+`Schedule?Company_Code=${logInWorker.Company_Code}&week_counter=${props.weeklyCounter}`, {
+                />
+
+                );
+                this.AlertPro.open();
+
+                fetch(apiUrl + `Schedule?Company_Code=${logInWorker.Company_Code}&week_counter=${props.weeklyCounter}`, {
                     method: 'GET',
                     headers: new Headers({
                         'Accept': 'application/json; charset=UTF-8',
@@ -125,11 +120,11 @@ useEffect(() => {
 
             });
     };
-    
+
     ////////////// responsive workers array for searchbar
-    const filteredWorkers = search ? 
-    workers.filter((worker) => worker.Name.includes(search)) :
-    workers;
+    const filteredWorkers = search ?
+        workers.filter((worker) => worker.Name.includes(search)) :
+        workers;
 
     const workerStr = filteredWorkers.map((worker) =>
         <TouchableOpacity disabled={disabled} onPress={() => { addWorkerToShift(worker) }}>
@@ -175,7 +170,7 @@ useEffect(() => {
 
             <Overlay isVisible={visible} onBackdropPress={toggleOverlayShowWorkers} overlayStyle={{ position: 'absolute', bottom: 0, width: '100%', height: '80%' }}>
                 <Text style={{ fontSize: 30, alignContent: 'center', marginTop: 10, marginLeft: 70, marginBottom: 10, color: '#00BFFF' }}>Add Worker To Shift</Text>
-                <Text style={{fontWeight: 'bold', textAlign: 'center', justifyContent: 'center'}}>{props.selectedDate.substring(0, 10)} | {dayOfWeek} | {props.shift} </Text>
+                <Text style={{ fontWeight: 'bold', textAlign: 'center', justifyContent: 'center' }}>{props.selectedDate.substring(0, 10)} | {dayOfWeek} | {props.shift} </Text>
 
                 <SearchBar inputStyle={{ backgroundColor: 'white' }}
                     containerStyle={{ backgroundColor: 'white', borderWidth: 1, borderRadius: 5, margin: 10, width: 350, alignSelf: 'center' }}

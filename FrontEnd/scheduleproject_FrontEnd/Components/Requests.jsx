@@ -1,6 +1,6 @@
 import { Button } from '@rneui/base';
 import React, { useState, useEffect, useContext } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Alert, Dimensions, ScrollView, SafeAreaView } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, SafeAreaView } from 'react-native';
 import { Overlay } from 'react-native-elements';
 import { Table, TableWrapper, Row } from 'react-native-table-component';
 import { Context } from '../Components/FCContext'
@@ -18,9 +18,8 @@ export default function Requests(props) {
   const [workersName, setWorkersName] = useState([]);
   const [selected, setSelected] = useState("");
 
-/////////////////// checking if there is requests availible and upate a state to render the table data
+  /////////////////// checking if there is requests availible and upate a state to render the table data
   useEffect(() => {
-    console.log(selected);
     if (requests.length > 0 && selected !== "") {
       const filteredRequests = requests.filter(request => request.Worker_Name === selected);
 
@@ -45,7 +44,7 @@ export default function Requests(props) {
     getrequests();
   }, [clicked == true])
 
-/////////////// get requests for a specific week in a specifec company from server
+  /////////////// get requests for a specific week in a specifec company from server
   const getrequests = () => {
     fetch(apiUrl + `RequestsFromClient/WeeklyRequests?Company_Name=${logInWorker.Company_Name}&Weekly_Counter=${props.weeklyCounter}`, {
       method: 'GET',
@@ -61,8 +60,6 @@ export default function Requests(props) {
         return res.json()
       })
       .then((data) => {
-
-        // console.log(data);
         setRequests(data);
 
       })
