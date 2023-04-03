@@ -14,7 +14,7 @@ namespace Fair_Scheduling_Application_Server.Controllers
     {
         // GET api/<controller>
         [EnableCors("*", "*", "*")]
-
+        //Get weekly schedule
         public Dictionary<string, Dictionary<string, List<Worker>>> Get(string Company_Code, int week_counter)
         {
             Data_Services ds = new Data_Services();
@@ -22,10 +22,10 @@ namespace Fair_Scheduling_Application_Server.Controllers
             return weekly_schedule;
         }
 
-        //create new schedule
         [EnableCors("*", "*", "*")]
         [Route("api/Schedule/CreateSchedule")]
         [HttpGet]
+        //create new schedule
         public List<WorkerInShift> CreateSchedule(string Company_Code,int WeeklyCounter)
         {
             Data_Services ds = new Data_Services();
