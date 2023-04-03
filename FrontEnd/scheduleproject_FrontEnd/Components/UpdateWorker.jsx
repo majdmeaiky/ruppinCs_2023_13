@@ -10,7 +10,7 @@ import * as ImagePicker from 'expo-image-picker'
 
 export default function UpdateWorker(props) {
 
-  const { logInWorker ,setWorkers,apiUrl } = useContext(Context);
+  const { logInWorker, setWorkers, apiUrl } = useContext(Context);
   const { worker, onUpdateWorker } = props;
 
   const [datepicked, setdatepicked] = useState(worker.Start_Date);
@@ -23,8 +23,9 @@ export default function UpdateWorker(props) {
   const [worker_Id, setWorker_Id] = useState(worker.Worker_Id);
   const [full_name, setFull_name] = useState(worker.Name);
   const [email, setEmail] = useState(worker.Email);
-const [disabled, setDisabled] = useState(false);
+  const [disabled, setDisabled] = useState(false);
 
+  ///////////////////// upload image from gallery
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -32,7 +33,7 @@ const [disabled, setDisabled] = useState(false);
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
-      base64:true
+      base64: true
     });
     console.log(result);
     if (!result.canceled) {
@@ -41,11 +42,13 @@ const [disabled, setDisabled] = useState(false);
     }
   };
 
+  //// gets the function from worker detail to update the worker and close the overlay 
   const handleUpdate = (updatedWorker) => {
     onUpdateWorker(updatedWorker);
   };
 
-  const UpdateWorker = async () => {
+  ///////////////////////// updating worker details and sending data to server
+  const UpdateWorker = () => {
     setDisabled(!disabled);
     const worker = {
       "Worker_Id": worker_Id,
@@ -56,8 +59,7 @@ const [disabled, setDisabled] = useState(false);
       "Company_Code": logInWorker.Company_Code,
       "Image": image
     };
-    console.log(worker);
-    fetch(apiUrl+`Workers`, {
+    fetch(apiUrl + `Workers`, {
       method: 'PUT',
       headers: new Headers({
         'Accept': 'application/json; charset=UTF-8',
@@ -71,7 +73,7 @@ const [disabled, setDisabled] = useState(false);
       })
       .then((data) => {
         handleUpdate(worker);
-        fetch(apiUrl+`Workers?Company_Code=${logInWorker.Company_Code}`, {
+        fetch(apiUrl + `Workers?Company_Code=${logInWorker.Company_Code}`, {
           method: 'GET',
           headers: new Headers({
             'Accept': 'application/json; charset=UTF-8',
@@ -101,7 +103,7 @@ const [disabled, setDisabled] = useState(false);
 
   };
 
-
+  /////////////////// handle date picker functionality
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -115,32 +117,29 @@ const [disabled, setDisabled] = useState(false);
     setdatepickedString(date.toDateString())
     hideDatePicker();
   };
-
-
-
-  function FormatDate (got_date)
-  {
-      const date = new Date(got_date);
-      const year = date.getFullYear();
-      const month = date.getMonth() + 1;
-      const day = date.getDate();
-      const formattedMonth = String(month).padStart(2, "0");
-      const formattedday = String(day).padStart(2, "0");
-      const formattedDate = `${year}/${formattedMonth}/${formattedday}`;
-      return formattedDate;
+  //////////////////////////// generates a string from date
+  function FormatDate(got_date) {
+    const date = new Date(got_date);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const formattedMonth = String(month).padStart(2, "0");
+    const formattedday = String(day).padStart(2, "0");
+    const formattedDate = `${year}/${formattedMonth}/${formattedday}`;
+    return formattedDate;
   };
 
   return (
 
-    <View  style={styles.container}>
+    <View style={styles.container}>
       <View>
         <Text style={styles.HeaderTXT}>Update Worker</Text>
       </View>
       <View style={styles.container}>
         <TouchableOpacity disabled={disabled} onPress={() => worker_Id ? pickImage() : alert('aa')}>
           {!image && <Image source={require('../assets/avatar.jpeg')} style={styles.image} />}
-          {image &&             <Image source={{ uri: `data:image/png;base64,${image}` }} style={styles.image} />
-}
+          {image && <Image source={{ uri: `data:image/png;base64,${image}` }} style={styles.image} />
+          }
         </TouchableOpacity>
       </View>
 
@@ -174,13 +173,13 @@ const [disabled, setDisabled] = useState(false);
         value={email}
         onChangeText={setEmail}
         inputStyle={{ color: 'grey' }}
-disabled={disabled}
+        disabled={disabled}
         leftIcon={
           <EvilIcon name='envelope' size={25} color='#00BFFF' />
         }
       />
       <TouchableOpacity onPress={showDatePicker} disabled={disabled}
->
+      >
         <Input
           disabledInputStyle={{ color: 'black' }}
           value={datepickedString}
@@ -192,7 +191,7 @@ disabled={disabled}
         />
       </TouchableOpacity>
       <DateTimePickerModal
-      disabled={disabled}
+        disabled={disabled}
         isVisible={isDatePickerVisible}
         mode="date"
         onConfirm={handleConfirm}

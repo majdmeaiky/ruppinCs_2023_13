@@ -27,18 +27,20 @@ export default function Menu() {
     const [selectedWorker, setSelectedWorker] = useState();
     const [scheduleStr, setScheduleStr] = useState();
     const [deleteStr, setDeleteStr] = useState();
+
+    ////////////////////////////to make the calendar strip start from the current sunday
     function getSunday1(date) {
         const sunday = new Date(date);
         sunday.setDate(new Date(date).getDate() - new Date(date).getDay());
         return sunday;
     };
-
+//////////////////////////////// when selecting a date
     const onDateSelected = (date) => {
         setSelectedDate(date);
         setStartingDate(getSunday1(date));
         setselecteddayoftheWeek((new Date(date).getDay()));
     };
-
+  ///////////////////////// updating shift state after selecting shift tab to render workers
     const handleIndexChange = (tab) => {
         setSelectedTab(tab);
         if (tab == 0) {
@@ -51,13 +53,13 @@ export default function Menu() {
         }
     };
 
+    ///////////////////////////////////// by pressing worker image for showing data of worker
     const toggleOverlayVieWorker = (worker) => {
         setSelectedWorker(worker);
         setVieworkerVisible(!vieworkerVisible);
     };
-
+/////////////////////////////// make new weekly schedule
     const makeSchedule = () => {
-
         fetch(apiUrl + `Schedule/CreateSchedule?Company_Code=${logInWorker.Company_Code}&weeklycounter=${weeklyCounter}`, {
             method: 'GET',
             headers: new Headers({
@@ -71,7 +73,6 @@ export default function Menu() {
             })
             .then((data) => {
                 const isEveryWorkerIdZero = data.every(item => item['Worker_Id'] === 0);
-
                 if (isEveryWorkerIdZero) {
                     setScheduleStr(<AlertPro
                         ref={ref => {
@@ -85,9 +86,6 @@ export default function Menu() {
                     />
                     );
                     this.AlertPro1.open();
-
-
-
                 } else {
                     setScheduleStr(<AlertPro
                         ref={ref => {
@@ -112,10 +110,10 @@ export default function Menu() {
 
     };
 
+///////////////////////////////////get weekly schedule for the first time
     useEffect(() => {
         {
             schedules[`${weeklyCounter}`] == null &&
-
                 setisLoading(true);
         }
 
@@ -123,13 +121,13 @@ export default function Menu() {
     }, [weeklyCounter]);
 
 
+////////////////////////////////////////////// get weekly schedule
     const getSchedule = (weeklyCounter1) => {
         fetch(apiUrl + `Schedule?Company_Code=${logInWorker.Company_Code}&week_counter=${weeklyCounter1}`, {
             method: 'GET',
             headers: new Headers({
                 'Accept': 'application/json; charset=UTF-8',
                 'Content-Type': 'application/json; charset=UTF-8',
-
             }),
         })
             .then(res => {
@@ -144,15 +142,15 @@ export default function Menu() {
                     // add the new schedule as a value for the 'Monday' key
                 });
                 setisLoading(false);
-
             })
-
             .catch((error) => {
                 console.error('Error:', error);
 
             });
 
     };
+
+    /////////////////////////////////// when moving to another week
     const handleWeekChanged = (startDate) => {
         const currentDate = new Date();
         const currentDay = currentDate.getDay();
@@ -168,6 +166,7 @@ export default function Menu() {
 
     };
 
+///////////////////////////////////// to delete a worker in shift
     const deleteWorkerInShift = (worker) => {
         console.log(worker.Company_Name);
         const Worker_Id = worker.Worker_Id;

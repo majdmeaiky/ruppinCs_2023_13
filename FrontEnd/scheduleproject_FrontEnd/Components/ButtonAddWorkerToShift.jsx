@@ -6,49 +6,24 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { SearchBar } from 'react-native-elements';
 import AlertPro from "react-native-alert-pro";
 
+////////////////// add worker to shift component
 export default function ButtonAddWorkerToShift(props) {
     const { logInWorker, setlogInWorker, workers, setWorkers, schedules, setSchedules,apiUrl } = useContext(Context);
     const [search, setSearch] = useState('');
 
     const [visible, setVisible] = useState(false);
-const [selecteddate, setSelecteddate] = useState();
 const [dayOfWeek, setDayOfWeek] = useState('');
 const [disabled, setDisabled] = useState(false);
 const [workerAddeed, setWorkerAddeed] = useState('');
 
+/////// updating dayofweek state 
 useEffect(() => {
     const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     setDayOfWeek(weekdays[props.DayOfWeek.toLocaleString('en-US', {weekday: 'long'})]);
-    console.log(dayOfWeek)});
+    });
 
-
-// useEffect(() => { 
-//     if (props.selectedDate !== undefined) {
-//       const options = { weekday: 'long' };
-//       const dayOfWeek = props.selectedDate.toLocaleDateString('en-US', options);
-//       console.log(dayOfWeek); // output: Saturday
-  
-//       const shiftDate = new Date(props.selectedDate);
-//       const shiftDateISOString = shiftDate.toISOString().slice(0, 10);
-  
-//       console.log(shiftDateISOString); // output: 2023-03-25
-//       console.log(props.Shift_Id);
-  
-//       setSelecteddate(shiftDateISOString);
-//       setStringDay(dayOfWeek);
-//     }
-//   }, [props.selectedDate, props.Shift_Id]);
-  
-
-
-
-
+/////////////////  get all workers from server
     const toggleOverlayShowWorkers = () => {
-        // alert(props.Shift_Id);
-        // alert(props.weeklyCounter);
-        console.log(props.selectedDate);
-
-
         fetch(apiUrl+`Workers?Company_Code=${logInWorker.Company_Code}`, {
             method: 'GET',
             headers: new Headers({
@@ -76,6 +51,7 @@ useEffect(() => {
         setVisible(!visible);
     };
 
+    /////////////////// post the selected worker to the shift
     const addWorkerToShift = (worker) => {
         // setDisabled(!disabled);
 
@@ -119,7 +95,6 @@ useEffect(() => {
                         'Content-Type': 'application/json; charset=UTF-8',
 
                     }),
-                    // body: JSON.stringify({ Company_Code }),
 
                 })
                     .then(res => {
@@ -129,16 +104,12 @@ useEffect(() => {
                         setTimeout(() => {
                             setVisible(!visible);
                         }, 1000); // 1000 milliseconds = 1 second
-        
-                          
-                        // alert('horray');
-                        // console.log(data);
+
                         setSchedules({
                             ...schedules, // copy the current state objecct
                             [`${props.weeklyCounter}`]: data,
                             // add the new schedule as a value for the 'Monday' key
                         });
-// alert('added succecfuly');
 
                     })
 
@@ -155,6 +126,7 @@ useEffect(() => {
             });
     };
     
+    ////////////// responsive workers array for searchbar
     const filteredWorkers = search ? 
     workers.filter((worker) => worker.Name.includes(search)) :
     workers;

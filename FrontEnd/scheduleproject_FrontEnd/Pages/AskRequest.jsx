@@ -8,18 +8,19 @@ import { Button } from '@rneui/themed';
 import Header from '../Components/Header';
 import ShowRequests from '../Components/ShowRequests';
 export default function AskRequest() {
-
+    //////////////////////////////// get sunday of the wweek
     function getSunday1(date) {
         const sunday = new Date(date);
         sunday.setDate(new Date(date).getDate() - new Date(date).getDay());
         return sunday;
     };
-    const { logInWorker,apiUrl } = useContext(Context);
+    const { logInWorker, apiUrl } = useContext(Context);
 
     const startingforRequest = getSunday1(new Date());
 
     startingforRequest.setDate(startingforRequest.getDate() + 7);
     const dictDate = new Date(startingforRequest);
+    /////////////////////// main state of all requests for current week
     const [requsts, setrequsts] = useState(
         {
             [FormatDate(dictDate.setDate(startingforRequest.getDate()))]: {
@@ -64,53 +65,53 @@ export default function AskRequest() {
     const [canSubmit, setcanSubmit] = useState(false);
     const [selectedDate, setSelectedDate] = useState(startingforRequest);
     const [weeklyCounter, setWeeklyCounter] = useState(1);
-    const [selectedTab, setSelectedTab] = useState(0);
-    const [value, setValue] = useState('');
     const [prevrequest, setprevrequest] = useState();
     const minDate = startingforRequest;
-const [requestSentStr, setRequestSentStr] = useState();
-const [requestnotValid, setRequestnotValid] = useState();
-useEffect(() => {
-setprevrequest();
-}, [])
+    const [requestSentStr, setRequestSentStr] = useState();
+    const [requestnotValid, setRequestnotValid] = useState();
 
+    // useEffect(() => {
+    //     setprevrequest();
+    // }, [])
 
-const fetchRequests=()=>{
-    fetch(apiUrl+'RequestsFromClient?Worker_Id=' + logInWorker.Worker_Id + '&Company_Name=' + logInWorker.Company_Name + '&weeklyCounter=' + weeklyCounter, {
-        method: 'GET',
-        headers: new Headers({
-            'Accept': 'application/json; charset=UTF-8',
-            'Content-Type': 'application/json; charset=UTF-8',
+//////////////////////// checking if there is prev requests for a worker and handle the disable of radio buttons
+    const fetchRequests = () => {
+        fetch(apiUrl + 'RequestsFromClient?Worker_Id=' + logInWorker.Worker_Id + '&Company_Name=' + logInWorker.Company_Name + '&weeklyCounter=' + weeklyCounter, {
+            method: 'GET',
+            headers: new Headers({
+                'Accept': 'application/json; charset=UTF-8',
+                'Content-Type': 'application/json; charset=UTF-8',
 
-        }),
-    })
-        .then(res => {
-            return res.json()
+            }),
         })
-        .then((data) => {
-            console.log('request length', data.length);
-            console.log('request', data);
-            if (data.length == 0) {
-                setcanSubmit(false);
-            }
-            else {
-                setprevrequest(data);
-                setcanSubmit(true);
-            }
+            .then(res => {
+                return res.json()
+            })
+            .then((data) => {
+                console.log('request length', data.length);
+                console.log('request', data);
+                if (data.length == 0) {
+                    setcanSubmit(false);
+                }
+                else {
+                    setprevrequest(data);
+                    setcanSubmit(true);
+                }
 
-        })
+            })
 
-        .catch((error) => {
-            console.error('Error:', error);
+            .catch((error) => {
+                console.error('Error:', error);
 
-        });
+            });
 
-};
-
+    };
+////////////// calling fetchRequest when moving to another week
     useEffect(() => {
         fetchRequests();
     }, [weeklyCounter])
 
+    /////////////////////// initiallize a new dictionery for a new week
     const CreateDictionary = ((start) => {
         const startDate = new Date(start);
         console.log('startDate', startDate);
@@ -131,7 +132,7 @@ const fetchRequests=()=>{
         return dict;
     });
 
-
+/////////////////// calculate difference in weeks between 2 dates
     const DateDifference = (newDate, oldDate) => {
         const startNew = getSunday1(newDate);
         startNew.setHours(0, 0, 0, 1);
@@ -148,6 +149,7 @@ const fetchRequests=()=>{
         }
     };
 
+    //////////////////// when selecting a date making a new dictionery and chacking valid day
     const onDateSelected = (date) => {
         const weekdiff = DateDifference(date, selectedDate);
         console.log('weekdiff', weekdiff);
@@ -186,42 +188,39 @@ const fetchRequests=()=>{
     }
 
 
-   
 
+/////////////////////////// retrive each day requests
     useEffect(() => {
         console.log('weeklyCounter', weeklyCounter);
-const resetMorning= requsts[FormatDate(selectedDate)];
-const M=resetMorning['M']['priorety'];
-const E=resetMorning['E']['priorety'];
-const N=resetMorning['N']['priorety'];
+        const resetMorning = requsts[FormatDate(selectedDate)];
+        const M = resetMorning['M']['priorety'];
+        const E = resetMorning['E']['priorety'];
+        const N = resetMorning['N']['priorety'];
 
-const arrM=[...morningButtons];
-const arrE=[...eveningButtons];
-const arrN=[...nightButtons];
-console.log('sssshjhfvl ',arrM);
-arrM.forEach(element => {
-    if(element.value==M){
-        element.selected=true;
-    }
-});
-arrE.forEach(element => {
-    if(element.value==E){
-        element.selected=true;
-    }
-});
-arrN.forEach(element => {
-    if(element.value==N){
-        element.selected=true;
-    }
-});
+        const arrM = [...morningButtons];
+        const arrE = [...eveningButtons];
+        const arrN = [...nightButtons];
+        arrM.forEach(element => {
+            if (element.value == M) {
+                element.selected = true;
+            }
+        });
+        arrE.forEach(element => {
+            if (element.value == E) {
+                element.selected = true;
+            }
+        });
+        arrN.forEach(element => {
+            if (element.value == N) {
+                element.selected = true;
+            }
+        });
         setRadioButtonsMorning(arrM);
         setRadioButtonsEvening(arrE);
         setRadioButtonsNight(arrN);
     }, [selectedDate]);
 
-    useEffect(() => {
-        console.log('after request update', JSON.stringify(requsts));
-    }, [requsts]);
+
     //========== radio button state + handle
     //morning
     const morningButtons = [
@@ -248,10 +247,12 @@ arrN.forEach(element => {
     ]
     const [radioButtonsMorning, setRadioButtonsMorning] = useState(morningButtons);
 
+    ///////////////////// handle radio button press
     function onPressRadioButtonMorning(getNewArr) {
         const update = [...getNewArr];
         setRadioButtonsMorning(update);
     }
+    //////////////////////// updates request state when selecting a shift
     useEffect(() => {
         let requestArr = { ...requsts };
         const formattedDate = FormatDate(selectedDate);
@@ -382,6 +383,7 @@ arrN.forEach(element => {
 
     }, [radioButtonsNight])
 
+///////////////////////////////// checking if there is at least one request priorerty not equal to 3
     const ChechDayValid = (day) => {
         let counter = 0;
         let requestcounter = 0;
@@ -403,6 +405,7 @@ arrN.forEach(element => {
         }
     }
 
+    ///////////////////////// convert dictionary to array and check if there is enough valid days and handle submit requests
     const HandleSubmit = () => {
         let requestArr = [];
         let requestObj = { ...requsts };
@@ -423,40 +426,36 @@ arrN.forEach(element => {
                 requestArr.push(request);
             }
         }
-        console.log('subimt', requestArr);
         if (validDaysCounter >= 5) {
-            fetch( apiUrl+'RequestsFromClient' ,
-            {
-                method: 'POST',
-                headers: new Headers({
-                    'Accept': 'application/json; charset=UTF-8',
-                    'Content-Type': 'application/json; charset=UTF-8',
+            fetch(apiUrl + 'RequestsFromClient',
+                {
+                    method: 'POST',
+                    headers: new Headers({
+                        'Accept': 'application/json; charset=UTF-8',
+                        'Content-Type': 'application/json; charset=UTF-8',
 
-                }),
-                body: JSON.stringify(requestArr),
-            })
+                    }),
+                    body: JSON.stringify(requestArr),
+                })
                 .then(res => {
-                    console.log(res);
                 })
                 .then((data) => {
-                    setRequestSentStr(      <AlertPro
+                    setRequestSentStr(<AlertPro
                         ref={ref => {
                             this.AlertPro = ref;
                         }}
                         title="Request Sent"
-                             message="Successfuly!"  
-                                                   showCancel={false}
+                        message="Successfuly!"
+                        showCancel={false}
                         showConfirm={false}
                         confirmText="OK"
-                      />
-                );
-                try{
-                    this.AlertPro.open();
+                    />
+                    );
+                    try {
+                        this.AlertPro.open();
 
-                }
-                catch{
-
-                }
+                    }
+                    catch { }
                     setcanSubmit(true);
                     fetchRequests();
                 })
@@ -468,23 +467,26 @@ arrN.forEach(element => {
         }
         else {
 
-setRequestnotValid( <AlertPro
-    ref={ref => {
-        this.AlertPro1 = ref;
-    }}
-    showConfirm={false}
-    showCancel={false}
-    title="Error"
-         message="You Have To Enter Requests At Least For 5 Days!"  
-    confirmText="OK"
-  />);
-try{
-                    this.AlertPro1.open();
-                }
-                catch{
-                    
+            setRequestnotValid(<AlertPro
+                ref={ref => {
+                    this.AlertPro1 = ref;
                 }}
+                showConfirm={false}
+                showCancel={false}
+                title="Error"
+                message="You Have To Enter Requests At Least For 5 Days!"
+                confirmText="OK"
+            />);
+            try {
+                this.AlertPro1.open();
+            }
+            catch {
+
+            }
+        }
     }
+
+    //////////////////////// when moving to another week
     const handleWeekChanged = (startDate) => {
         // Get the starting date of the current week
         const currentDate = new Date();
@@ -576,7 +578,7 @@ try{
                         </View>
                     }
                     {
-                        (canSubmit&&prevrequest) && <ShowRequests requests={prevrequest}></ShowRequests>
+                        (canSubmit && prevrequest) && <ShowRequests requests={prevrequest}></ShowRequests>
                     }
                     {requestSentStr}
                     {requestnotValid}

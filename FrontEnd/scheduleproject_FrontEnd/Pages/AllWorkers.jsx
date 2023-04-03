@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { ScrollView, StyleSheet, SafeAreaView, View, Text, Image, TouchableOpacity } from 'react-native';
 import Header from '../Components/Header';
-import { Card, Overlay } from '@rneui/themed';
+import {  Card, Overlay } from '@rneui/themed';
 import { SearchBar } from '@rneui/base';
 
 import { Context } from '../Components/FCContext'
@@ -12,46 +12,17 @@ export default function AllWorkers() {
   const [search, setSearch] = useState('');
   const [vieworkerVisible, setVieworkerVisible] = useState(false);
 
-  const { logInWorker, workers, setWorkers, addworkerVisible, setAddworkerVisible,apiUrl } = useContext(Context);
+  const { logInWorker, workers, setWorkers,apiUrl } = useContext(Context);
   const [selectedWorker, setSelectedWorker] = useState();
-  const toggleOverlayAddWorker = () => {
-    setAddworkerVisible(!addworkerVisible);
-  };
 
 
+///////////////////////// showing the overlay when clicking on worker card
   const toggleOverlayVieWorker = (worker) => {
     setSelectedWorker(worker);
     setVieworkerVisible(!vieworkerVisible);
   };
 
-  // useFocusEffect(()=>{
-  //   fetch(`http://10.0.0.8:45455/api/Workers?Company_Code=${logInWorker.Company_Code}`, {
-  //     method: 'GET',
-  //     headers: new Headers({
-  //       'Accept': 'application/json; charset=UTF-8',
-  //       'Content-Type': 'application/json; charset=UTF-8',
-
-  //     }),
-  //     // body: JSON.stringify({ Company_Code }),
-
-  //   })
-  //     .then(res => {
-  //       return res.json()
-  //     })
-  //     .then((data) => {
-  //       // console.log(data);
-  //       setWorkers(data);
-
-  //     })
-
-  //     .catch((error) => {
-  //       console.error('Error:', error);
-
-  //     });
-  //   console.log('bvbyeee');
-
-  // });
-
+  /////////////////////////// get all workers for the first time
   useEffect(() => {
     fetch(apiUrl+`Workers?Company_Code=${logInWorker.Company_Code}`, {
       method: 'GET',
@@ -60,33 +31,26 @@ export default function AllWorkers() {
         'Content-Type': 'application/json; charset=UTF-8',
 
       }),
-      // body: JSON.stringify({ Company_Code }),
-
     })
       .then(res => {
         return res.json()
       })
       .then((data) => {
-        // console.log(data);
         setWorkers(data);
 
       })
 
       .catch((error) => {
         console.error('Error:', error);
-
       });
-    console.log('bvbyeee');
-  }, [])
+  }, []);
 
+  ////////////////////// making responsive workers array to handle search bar
   const filteredWorkers = search ? 
   workers.filter((worker) => worker.Name.includes(search)) :
   workers;
 
-const ondeleteWorker=()=>{
-
-};
-
+////////////////// mapping a cards for all workers that reponse for the search bar
   const workerStr = filteredWorkers.map((worker) =>
     <TouchableOpacity onPress={() => { toggleOverlayVieWorker(worker) }}>
       <Card containerStyle={{ borderRadius: 10, height: 200, width: 170, margin: 22 }} >
@@ -116,6 +80,7 @@ const ondeleteWorker=()=>{
 
       <View style={styles.container}>
 
+    {/* add worker component */}
       <ButtonAddNewWorker></ButtonAddNewWorker>
 
       <SearchBar inputStyle={{ backgroundColor: 'white' }}
@@ -134,9 +99,6 @@ const ondeleteWorker=()=>{
         {workerStr}
       </View>
       </ScrollView>
-      <Overlay isVisible={addworkerVisible} onBackdropPress={toggleOverlayAddWorker} overlayStyle={{ position: 'absolute', bottom: 0, width: '100%' }}>
-<ButtonAddNewWorker></ButtonAddNewWorker>            
-          </Overlay>
 
           <Overlay isVisible={vieworkerVisible} onBackdropPress={toggleOverlayVieWorker} overlayStyle={{ position: 'absolute', bottom: 0, width: '100%' }}>
             <WorkerDetails worker={selectedWorker} ondeleteWorker={toggleOverlayVieWorker}></WorkerDetails>

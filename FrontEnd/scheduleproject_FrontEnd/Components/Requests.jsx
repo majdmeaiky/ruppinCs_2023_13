@@ -6,6 +6,7 @@ import { Table, TableWrapper, Row } from 'react-native-table-component';
 import { Context } from '../Components/FCContext'
 import { SelectList } from 'react-native-dropdown-select-list'
 
+//////////////////////////// requests table of all workers in a company for a specifec week
 export default function Requests(props) {
   const { logInWorker, apiUrl } = useContext(Context);
   const [requests, setRequests] = useState([]);
@@ -17,7 +18,7 @@ export default function Requests(props) {
   const [workersName, setWorkersName] = useState([]);
   const [selected, setSelected] = useState("");
 
-
+/////////////////// checking if there is requests availible and upate a state to render the table data
   useEffect(() => {
     console.log(selected);
     if (requests.length > 0 && selected !== "") {
@@ -28,14 +29,12 @@ export default function Requests(props) {
     } else {
       setTableData([]);
     }
-  }, [selected])
+  }, [selected]);
 
+  //////////// generating array of workers names that have requests (selectList)
   useEffect(() => {
     setWorkersName([...new Set(requests.map((request) => request.Worker_Name))]);
-
   }, [requests]);
-
-
 
 
   const hide = () => {
@@ -43,12 +42,10 @@ export default function Requests(props) {
   };
 
   useEffect(() => {
-
     getrequests();
-
   }, [clicked == true])
 
-
+/////////////// get requests for a specific week in a specifec company from server
   const getrequests = () => {
     fetch(apiUrl + `RequestsFromClient/WeeklyRequests?Company_Name=${logInWorker.Company_Name}&Weekly_Counter=${props.weeklyCounter}`, {
       method: 'GET',
@@ -95,7 +92,7 @@ export default function Requests(props) {
           alignSelf: 'center'
         }}
         titleStyle={{ fontWeight: '700' }}
-title='Show Requests'
+        title='Show Requests'
         onPress={() => {
           // getrequests();
           setVisible(!visible);
@@ -137,8 +134,8 @@ title='Show Requests'
                     />
                   ))
                 }
-              </Table>: <Text style={{fontSize:30,marginTop:50,marginLeft:50}}>*No Requests Availible*</Text>
-}
+              </Table> : <Text style={{ fontSize: 30, marginTop: 50, marginLeft: 50 }}>*No Requests Availible*</Text>
+              }
 
             </ScrollView>
 

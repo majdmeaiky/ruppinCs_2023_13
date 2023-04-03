@@ -8,7 +8,7 @@ import UpdateWorker from './UpdateWorker';
 export default function WorkerDetails(props) {
 
   const {  ondeleteWorker } = props;
-const [worker, setWorker] = useState(props.worker)
+const [worker, setWorker] = useState(props.worker);
     // input sates
     const { logInWorker,workers, setWorkers,apiUrl} = useContext(Context);
     const [updateWorkerVisible, setUpdateWorkerVisible] = useState(false);
@@ -25,6 +25,7 @@ const [worker, setWorker] = useState(props.worker)
         return formattedDate;
     }
 
+    //////////////// handle delete worker
 const DeleteWorker = ()=>{
     const id = worker.Worker_Id;
     const Company_Code = logInWorker.Company_Code;
@@ -78,16 +79,18 @@ const DeleteWorker = ()=>{
             
         });
 }
-
+///////////////////// handle showing the update worker component
 const handleUpdateWorker = (updatedWorker) => {
   setWorker(updatedWorker);
   toggleOverlayUpdateWorker(); // close the overlay after updating the worker
 };
 
+///////////////////// handle update worker overlay
 const toggleOverlayUpdateWorker = () => {
     setUpdateWorkerVisible(!updateWorkerVisible);
   };
 
+  ////////////////// for closing the overlay
   const handleDeleteWorker=()=>{
     ondeleteWorker();
   }

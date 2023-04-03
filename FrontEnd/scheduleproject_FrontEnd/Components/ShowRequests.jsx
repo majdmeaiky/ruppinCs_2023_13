@@ -1,16 +1,16 @@
-import { useFocusEffect } from '@react-navigation/native';
 import React, { useEffect,useState } from 'react'
 import { View, Text ,StyleSheet} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-//npm install react-native-table-component
 import { Table, Row, Rows } from 'react-native-table-component';
 
+///////////////////////////// component for showing requests of a worker in specifec week
 export default function ShowRequests(props) {
   const headers = ['Date', 'Morning', 'Evening', 'night'];
   const data = props.requests;
   const [requestdata, setrequestdata] = useState();
   const [widthArr, setWidthArr] = useState([100, 100, 100, 100]);
 
+  ///////////////// generates a string fom date
   function FormatDate(got_date) {
     const date = new Date(got_date);
     const year = date.getFullYear();
@@ -21,13 +21,17 @@ export default function ShowRequests(props) {
     const formattedDate = `${year}/${formattedMonth}/${formattedday}`;
 
     return formattedDate;
-  }
+  };
+
+//////////////// sort inner arrays by date
   function sortByDate(arr) {
     arr.sort(function (a, b) {
       return new Date(a[0]) - new Date(b[0]);
     });
     return arr;
-  }
+  };
+
+  ////////////////// group requests by date and type to array of arrays
   function groupByDateAndType(arr) {
     const grouped = arr.reduce((acc, curr) => {
       const { date, priorety, Type } = curr;
@@ -42,8 +46,6 @@ export default function ShowRequests(props) {
 
     const result = [];
     const dates = [...new Set(grouped.map((item) => item.date))];
-    console.log('dates', dates);
-    console.log('grouped', grouped);
 
     dates.forEach((date) => {
       const m = grouped.find((item) => item.date === date).M;
@@ -61,12 +63,10 @@ export default function ShowRequests(props) {
 
     });
     return formatted_array;
-  }
+  };
 
-
+///////// sets the requests of a worker to requestdata state to render the table
   useEffect(() => {
-    // let a= requestdata;
-    console.log('ssssss',data);
     const result = groupByDateAndType(data);
     setrequestdata(result);
 
