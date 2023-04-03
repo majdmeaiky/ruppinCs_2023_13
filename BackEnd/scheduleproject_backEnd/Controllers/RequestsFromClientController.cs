@@ -17,6 +17,7 @@ namespace Fair_Scheduling_Application_Server.Controllers
 
         // GET api/<controller>/5
         [EnableCors("*", "*", "*")]
+        //Get Weekly requests of specific worker
         public List<WorkerRequestsFromClient> Get(int Worker_ID,string Company_Name,int WeeklyCounter)
         {
             Data_Services ds = new Data_Services();
@@ -27,6 +28,7 @@ namespace Fair_Scheduling_Application_Server.Controllers
         [EnableCors("*", "*", "*")]
         [System.Web.Http.Route("api/RequestsFromClient/WeeklyRequests")]
         [System.Web.Http.HttpGet]
+        //Get Weekly requests for a company
         public List<WeeklyRequests> WeeklyRequests(string Company_Name, int Weekly_Counter)
         {
             Data_Services ds = new Data_Services();
@@ -35,7 +37,7 @@ namespace Fair_Scheduling_Application_Server.Controllers
         }
 
         [EnableCors("*", "*", "*")]
-
+        //Post requests of specific worker
         public HttpResponseMessage ProcessWorkerRequests([FromBody] List<WorkerRequestsFromClient> workerRequests)
         {
             Data_Services ds = new Data_Services();

@@ -14,7 +14,7 @@ namespace Fair_Scheduling_Application_Server.Controllers
     {
         // GET api/<controller>
         [EnableCors("*", "*", "*")]
-
+        //Get all workers of company
         public IEnumerable<Worker> Get(string Company_Code)
         {
             Data_Services ds = new Data_Services();
@@ -31,7 +31,7 @@ namespace Fair_Scheduling_Application_Server.Controllers
 
         // POST api/<controller>
         [EnableCors("*", "*", "*")]
-
+        //Validate login
         public Worker Post([FromBody] Worker worker)
         {
             Data_Services ds = new Data_Services();
@@ -44,6 +44,7 @@ namespace Fair_Scheduling_Application_Server.Controllers
 
         [Route("api/Workers/AddWorker")]
         [HttpPost]
+        //Create ne worker
         public HttpResponseMessage AddWorker([FromBody] Worker worker)
         {
             Data_Services ds = new Data_Services();
@@ -51,6 +52,7 @@ namespace Fair_Scheduling_Application_Server.Controllers
         }
 
         // PUT api/<controller>/5
+        //edit worker
         public HttpResponseMessage Put([FromBody] Worker worker)
         {
             Data_Services ds = new Data_Services();
@@ -64,6 +66,7 @@ namespace Fair_Scheduling_Application_Server.Controllers
         [EnableCors("*", "*", "*")]
 
         [HttpDelete]
+        //Delete worker
         public HttpResponseMessage DeleteWorker(int Worker_Id, string Company_Code)
         {
             Data_Services ds = new Data_Services();
