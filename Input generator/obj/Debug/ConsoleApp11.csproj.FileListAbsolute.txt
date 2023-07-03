@@ -1,0 +1,21 @@
+C:\Users\mikie\source\repos\ConsoleApp11\bin\Debug\ConsoleApp11.exe.config
+C:\Users\mikie\source\repos\ConsoleApp11\bin\Debug\ConsoleApp11.exe
+C:\Users\mikie\source\repos\ConsoleApp11\bin\Debug\ConsoleApp11.pdb
+C:\Users\mikie\source\repos\ConsoleApp11\bin\Debug\Newtonsoft.Json.dll
+C:\Users\mikie\source\repos\ConsoleApp11\bin\Debug\Newtonsoft.Json.xml
+C:\Users\mikie\source\repos\ConsoleApp11\obj\Debug\ConsoleApp11.csproj.AssemblyReference.cache
+C:\Users\mikie\source\repos\ConsoleApp11\obj\Debug\ConsoleApp11.csproj.CoreCompileInputs.cache
+C:\Users\mikie\source\repos\ConsoleApp11\obj\Debug\ConsoleApp11.csproj.CopyComplete
+C:\Users\mikie\source\repos\ConsoleApp11\obj\Debug\ConsoleApp11.exe
+C:\Users\mikie\source\repos\ConsoleApp11\obj\Debug\ConsoleApp11.pdb
+C:\Users\mikie\source\repos\ConsoleApp11\obj\Debug\ConsoleApp11.csproj.SuggestedBindingRedirects.cache
+C:\Users\mikie\OneDrive\שולחן העבודה\Fair_Schedule_App\Input generator\bin\Debug\ConsoleApp11.exe.config
+C:\Users\mikie\OneDrive\שולחן העבודה\Fair_Schedule_App\Input generator\bin\Debug\ConsoleApp11.exe
+C:\Users\mikie\OneDrive\שולחן העבודה\Fair_Schedule_App\Input generator\bin\Debug\ConsoleApp11.pdb
+C:\Users\mikie\OneDrive\שולחן העבודה\Fair_Schedule_App\Input generator\bin\Debug\Newtonsoft.Json.dll
+C:\Users\mikie\OneDrive\שולחן העבודה\Fair_Schedule_App\Input generator\bin\Debug\Newtonsoft.Json.xml
+C:\Users\mikie\OneDrive\שולחן העבודה\Fair_Schedule_App\Input generator\obj\Debug\ConsoleApp11.csproj.AssemblyReference.cache
+C:\Users\mikie\OneDrive\שולחן העבודה\Fair_Schedule_App\Input generator\obj\Debug\ConsoleApp11.csproj.CoreCompileInputs.cache
+C:\Users\mikie\OneDrive\שולחן העבודה\Fair_Schedule_App\Input generator\obj\Debug\ConsoleApp11.csproj.CopyComplete
+C:\Users\mikie\OneDrive\שולחן העבודה\Fair_Schedule_App\Input generator\obj\Debug\ConsoleApp11.exe
+C:\Users\mikie\OneDrive\שולחן העבודה\Fair_Schedule_App\Input generator\obj\Debug\ConsoleApp11.pdb

@@ -1,0 +1,10 @@
+C:\Users\mikie\OneDrive\שולחן העבודה\Fair_Schedule_App\Input generator\bin\Release\ConsoleApp11.exe.config
+C:\Users\mikie\OneDrive\שולחן העבודה\Fair_Schedule_App\Input generator\bin\Release\ConsoleApp11.exe
+C:\Users\mikie\OneDrive\שולחן העבודה\Fair_Schedule_App\Input generator\bin\Release\ConsoleApp11.pdb
+C:\Users\mikie\OneDrive\שולחן העבודה\Fair_Schedule_App\Input generator\bin\Release\Newtonsoft.Json.dll
+C:\Users\mikie\OneDrive\שולחן העבודה\Fair_Schedule_App\Input generator\bin\Release\Newtonsoft.Json.xml
+C:\Users\mikie\OneDrive\שולחן העבודה\Fair_Schedule_App\Input generator\obj\Release\ConsoleApp11.csproj.AssemblyReference.cache
+C:\Users\mikie\OneDrive\שולחן העבודה\Fair_Schedule_App\Input generator\obj\Release\ConsoleApp11.csproj.CoreCompileInputs.cache
+C:\Users\mikie\OneDrive\שולחן העבודה\Fair_Schedule_App\Input generator\obj\Release\ConsoleApp11.csproj.CopyComplete
+C:\Users\mikie\OneDrive\שולחן העבודה\Fair_Schedule_App\Input generator\obj\Release\ConsoleApp11.exe
+C:\Users\mikie\OneDrive\שולחן העבודה\Fair_Schedule_App\Input generator\obj\Release\ConsoleApp11.pdb
