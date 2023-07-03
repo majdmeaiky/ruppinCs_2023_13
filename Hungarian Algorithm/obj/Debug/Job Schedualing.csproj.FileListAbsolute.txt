@@ -1,0 +1,14 @@
+C:\Users\mikie\source\repos\Job Schedualing\obj\Debug\Job Schedualing.csproj.AssemblyReference.cache
+C:\Users\mikie\source\repos\Job Schedualing\obj\Debug\Job Schedualing.csproj.CoreCompileInputs.cache
+C:\Users\mikie\source\repos\Job Schedualing\bin\Debug\Job Schedualing.exe.config
+C:\Users\mikie\source\repos\Job Schedualing\bin\Debug\Job Schedualing.exe
+C:\Users\mikie\source\repos\Job Schedualing\bin\Debug\Job Schedualing.pdb
+C:\Users\mikie\source\repos\Job Schedualing\obj\Debug\Job Schedualing.exe
+C:\Users\mikie\source\repos\Job Schedualing\obj\Debug\Job Schedualing.pdb
+C:\Users\mikie\OneDrive\שולחן העבודה\Protofilio\Job-Scheduling-Algorithm-With-Optimization\bin\Debug\Job Schedualing.exe.config
+C:\Users\mikie\OneDrive\שולחן העבודה\Protofilio\Job-Scheduling-Algorithm-With-Optimization\bin\Debug\Job Schedualing.exe
+C:\Users\mikie\OneDrive\שולחן העבודה\Protofilio\Job-Scheduling-Algorithm-With-Optimization\bin\Debug\Job Schedualing.pdb
+C:\Users\mikie\OneDrive\שולחן העבודה\Protofilio\Job-Scheduling-Algorithm-With-Optimization\obj\Debug\Job Schedualing.csproj.AssemblyReference.cache
+C:\Users\mikie\OneDrive\שולחן העבודה\Protofilio\Job-Scheduling-Algorithm-With-Optimization\obj\Debug\Job Schedualing.csproj.CoreCompileInputs.cache
+C:\Users\mikie\OneDrive\שולחן העבודה\Protofilio\Job-Scheduling-Algorithm-With-Optimization\obj\Debug\Job Schedualing.exe
+C:\Users\mikie\OneDrive\שולחן העבודה\Protofilio\Job-Scheduling-Algorithm-With-Optimization\obj\Debug\Job Schedualing.pdb
